@@ -1,0 +1,33 @@
+##############################
+Installing the PsychoPy library
+
+https://psychologyit.uconn.edu/2017/09/20/instructions-for-installing-psychopy/#
+##############################
+
+Once you have Anaconda Python installed on your computer, you will need to create an environment for PsychoPy.
+
+Open a command prompt (Windows) or a terminal (Mac/Linux) and enter the following:
+
+conda create -n psychopy --channel https://conda.anaconda.org/CogSci psychopy pyglet wxpython pygame python=2.7
+
+which means:
+
+    conda create: use (Ana)conda to create a Python environment
+    -n psychopy: named "psychopy"
+    --channel https://conda.anaconda.org/CogSci: in addition to the normal package sources, look in the "CogSci" channel for the packages I need
+    psychopy pyglet wxpython pygame: install these packages and any other packages that they depend on
+    python=2.7: use Python 2.7 in this environment
+
+Starting PsychoPy
+
+To start the PsychoPy builder, enter the following in your terminal/command prompt:
+Mac/Linux
+
+source activate psychopy
+~/.conda/envs/psychopy-instructions/lib/python2.7/site-packages/psychopy/app/psychopyApp.py -b
+
+Then, when you are done, enter:
+
+source deactivate
+
+

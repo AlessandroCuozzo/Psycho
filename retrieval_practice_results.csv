@@ -1,0 +1,5 @@
+word	translation	response1	response2	response3	response4	response5	attempts	successes	failures
+loup	wolf	wolf	**LEARN**	zu	**LEARN**	wu	3	1	2
+chien	dog	dog	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	1	1	0
+chat	cat	trrr	cat	**DROPPED**	**DROPPED**	**DROPPED**	2	1	1
+renard	fox	fox	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	1	1	0
