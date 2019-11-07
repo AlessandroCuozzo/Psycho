@@ -55,13 +55,13 @@ class Pair:
         self.drop = False # will become True once the user decides to drop the pair after a success
         self.fail = 0 # the number of times the user failed the word pair test
         self.success = 0 # the number of times the user gives the right answer
-        self.testChosen = 0 # maximum 2 times
-        self.learnChosen = 0 # maximum 2 times
-        self.maxTestChosen = 2 # This value will never change ; it's a threshold
-        self.maxLearnChosen = 2 # This value will never change ; it's a threshold 
+        self.test = 0 # maximum 2 times
+        self.learn = 0 # maximum 2 times
+        self.maxTest = 3 # This value may change during the program according to the user performance -> flexible threshold
+        self.maxLearn = 2 # This value will never change -> fixed threshold 
         self.newTest = False # True when the user will decide to test again the word pair
         self.newLearn = False # True when the user will decide to learn again the word pair
-        self.allUserResponses = {1:'', 2:'', 3:'', 4:'', 5:''} # dictionnary that will save all responses attempted by the user 
+        self.allUserResponses = {} # dictionnary that will save all responses attempted by the user 
         
     def addResponse(self,user_response,turn): # call this function every time the user does another translation attempt for the current pair     
         """
@@ -72,7 +72,7 @@ class Pair:
         self.attempt += 1 # the user performs a new attempt
         self.user_response = user_response.lower().strip() # on set tous les caractères en minuscule ET on enlève les éventuels espaces au début et à la fin du mot (pour réduire les éventuels biais dus aux erreurs de frappe)
         #self.user_responseL = len(self.user_response) 
-        self.allUserResponses[turn] += self.user_response # save the response in the responses dictionnary to keep track
+        self.allUserResponses[turn] = self.user_response # save the response in the responses dictionnary to keep track
         
     def resetResponse(self):      
         """
@@ -96,7 +96,7 @@ class Pair:
         - **Input**:
             :turn: in which turn of the main loop are we
         """
-        self.allUserResponses[turn] += '**LEARN**' # save the response in the responses dictionnary to keep track
+        self.allUserResponses[turn] = '**LEARN**' # save the response in the responses dictionnary to keep track
         
     def addDrop(self,turn):
         """
@@ -104,13 +104,26 @@ class Pair:
         - **Input**:
             :turn: in which turn of the main loop are we
         """
-        self.allUserResponses[turn] += '**DROPPED**' # save the response in the responses dictionnary to keep track
+        self.allUserResponses[turn] = '**DROPPED**' # save the response in the responses dictionnary to keep track
+        
+    def addFinish(self,turn):
+        """
+        Fill the allUserResponses with **FINISHED** for the actual turn
+        - **Input**:
+            :turn: in which turn of the main loop are we
+        """
+        self.allUserResponses[turn] = '**FINISHED**' # save the response in the responses dictionnary to keep track
         
     def addFail(self):   
         """
-        Actualize the number of failure for the word pair
+        1) Actualize the number of failure for the word pair.
+        2) Set the pair word for another testing.
+        3) Increases the threshold of maximum testing if the user did not have have a single correct answer yet.
         """
-        self.fail += 1
+        self.fail += 1 # Actualize the number of failure for the word pair.
+        self.newTest = True # after a wrong answer, the user will have to try again ; we want him to give the correct answer at least once !
+        if self.success==0: # If the user did not have have a single correct answer yet
+            self.maxTest += 1 # increases the threshold of maximum testing
     
     def addSuccess(self):     
         """
@@ -132,20 +145,14 @@ class Pair:
         else: # user_choice == 'learn'
             self.newLearn = True
     
-    def setNewTestAfterLearn(self):
+    def setTest(self):       
         """
-        If the user has decided to learn the word pair, we must still set the newTest for the next loop turn
-        """
-        self.newTest = True
-    
-    def resetNewTest(self):       
-        """
-        reset newTest to False before every new choice from the user
+        set lest = test + 1
         """       
-        self.newTest = False
+        self.test += 1 #  The threshold is maxTest
         
-    def resetNewLearn(self):       
+    def setLearn(self):       
         """
-        reset newLearn to False before every new choice from the user
+        reset Learn = learn + 1
         """       
-        self.newTest = False
+        self.learn += 1 # The threshold is maxLearn
