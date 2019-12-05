@@ -28,7 +28,7 @@ CORRECT_SET = set() # empty set in which we will add every string word when corr
 for pair in dico: # pour chaque pair de mots présente dans le dictionnaire du fichier 'constants'
     LISTE.append(Pair(pair,dico[pair])) # pair is the dico key (french word) ; dico[pair] is the value of the key (corresponding translated word)
 shuffle(LISTE) # mélange la liste de mots -> ordre au hasard
-
+feedback = True # can be set to True or False
 
 # --------------- #
 # visual settings #
@@ -104,6 +104,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
             # LEARNING THE PAIR WORD #
             # ---------------------- #
             if pair.newLearn == True and pair.newTest == False and pair.learn < pair.maxLearn: # the user chose to learn this pair after its first correct answer AND if he has not reached the learning threshold yet
+                learn = pair.word+'\t\t\t'+pair.translate # le mot en français + 3 tabs (espacements + la traduction)
                 qstim = TextStim(disp, text=learn, pos=qpos, height=24) # stimulus texte
                 qstim.draw() # dessiner la pair de mots
                 disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
@@ -155,12 +156,13 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 # SHOW THE RESPONSE AND CORRECT ANSWER TO THE USER       #
                 # ------------------------------------------------------ #
                 pair.addResponse(response,i) # add the user response in the pair object (no matter if the response is correct or wrong)
-                check = 'traduction = '+pair.translate+'\n votre reponse = '+pair.user_response # créer une question
-                qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-                qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
-                qstim.draw() # dessiner la question
-                disp.flip() # passer au screen au suivant -> on met la question par-dessus
-                core.wait(2) # delay of 10 seconds before passing to the learning phase
+                if feedback==True: # Does the subject benefits of a feed back after an answer ?
+                    check = 'traduction = '+pair.translate+'\n votre reponse = '+pair.user_response # créer une question
+                    qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
+                    qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
+                    qstim.draw() # dessiner la question
+                    disp.flip() # passer au screen au suivant -> on met la question par-dessus
+                    core.wait(2) # delay of 10 seconds before passing to the learning phase
         
                 # ------------------------------------------------------------------ #
                 # CHECK IF THE USER RESPONSE IS CORRECT OR WRONG                     #
@@ -230,7 +232,7 @@ disp.close() # close the display
 ##############################################################################################################################
 ##############################################################################################################################
 ##############################################################################################################################
-""" 
+"""
 
 #################
 #################
@@ -241,10 +243,10 @@ disp.close() # close the display
 #with open('retrieval_practice_results_'+str(datetime.now())+'.csv') as f: # open a CSV file to write the results
 with open('retrieval_practice_results.csv','w') as f: # open a CSV file to write the results -> 'w' is for 'write' -> we do not open an existing file, but create a new one
     response_header = '\t'.join(['response'+str(i+1) for i in range(I)]) # I is equal to the last iteration of the main while loop => gives one big string containing tabs (\t) thanks to the join function
-    f.write('word\ttranslation\t'+response_header+'\t1st attempt\tattempt\tsuccess\tfailure\n') # write the header of the table
+    f.write('word\ttranslation\t'+response_header+'\t1st_attempt\t1st_success\t1st_failure\tattempt\tsuccess\tfailure\n') # write the header of the table
     for pair in LISTE: # pour chaque pair de mot
         AUR = '\t'.join([pair.allUserResponses[i+1] for i in range(I)]) # AUR = all user responses for this word pair
-        f.write(pair.word+'\t'+pair.translate+'\t'+AUR+'\t'+str(pair.firstAttempt)+'\t'+str(pair.attempt)+'\t'+str(pair.success)+'\t'+str(pair.fail)+'\n') # write all results for the word pair in a row
+        f.write(pair.word+'\t'+pair.translate+'\t'+AUR+'\t'+str(pair.firstAttempt)+'\t'+str(pair.firstSuccess)+'\t'+str(pair.firstFail)+'\t'+str(pair.attempt)+'\t'+str(pair.success)+'\t'+str(pair.fail)+'\n') # write all results for the word pair in a row
 
  
 #################

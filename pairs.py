@@ -21,24 +21,28 @@ class Pair:
     CREATE PAIR CLASS CONTAINING 
     
     - **Constructor Input**:
-           :word: the french word which is string -> [key from the constants 'dico' dictionnary]
-           :translate: the translated string of the word [value from the constants 'dico' dictionnary]
-           :firstTest: Boolean -> Will be True once the user gives the first correct answer (False by default)
-           :firstAttempt: The number of times the user needed to answer correctly to the very 1st test
-           :attempt: the number of attempt the user will do to achieve a correct translation (starts at zero)
-           :wordL: length of the french word
-           :translateL: length of the translate word
-           :drop: boolean (True or False). Default = False -> will become True once the user decides to drop the pair after a success
-           :fail: integer [zero by default] => the number of times the user failed the word pair test
-           :success: integer [zero by default] => the number of times the user gives the right answer
-           :maxTest: maximum number of times the user will be tested after having chosen to be
-           :maxLearn: maximum number of times the user will learn again a word pair after having chosen it
-           :newTest: boolean [True or False] => Default = False => True when the user will decide to test again the word pair
-           :newLearn: boolean [True or False] => Default = False => True when the user will decide to learn again the word pair
-           :allUserResponses: dictionnary {1:'', 2:'', 3:'', 4:'', 5:''} that will save all responses attempted by the user 
-    
-    - **General properties of the person**: 
+        :word: the that the user will try to translate
+        :translate: the correct translation of the word
 
+    - **General properties of the pair**: 
+        :word: the french word which is string -> [key from the constants 'dico' dictionnary]
+        :translate: the translated string of the word [value from the constants 'dico' dictionnary]
+        :firstTest: Boolean -> Will be True once the user gives the first correct answer (False by default)
+        :firstAttempt: The number of times the user needed to answer correctly to the very 1st test
+        :firstSuccess: The number of times the user succeeded to the first test -> will never be higher than 1 at the current version of this program
+        :firstFail: The number of times the user failed before giving its first correct answer
+        :attempt: the number of attempt the user will do to achieve a correct translation (starts at zero)
+        :wordL: length of the french word
+        :translateL: length of the translate word
+        :drop: boolean (True or False). Default = False -> will become True once the user decides to drop the pair after a success
+        :fail: integer [zero by default] => the number of times the user failed the word pair test
+        :success: integer [zero by default] => the number of times the user gives the right answer
+        :maxTest: maximum number of times the user will be tested after having chosen to be
+        :maxLearn: maximum number of times the user will learn again a word pair after having chosen it
+        :newTest: boolean [True or False] => Default = False => True when the user will decide to test again the word pair
+        :newLearn: boolean [True or False] => Default = False => True when the user will decide to learn again the word pair
+        :allUserResponses: dictionnary {} that will save all responses attempted by the user 
+    
     """
         
     def __init__(self,word,translate):      
@@ -53,6 +57,8 @@ class Pair:
         self.translate = translate
         self.firstTest = False # Will be True once the user gives the first correct answer
         self.firstAttempt = 0 # The number of times the user needed to answer correctly to the very 1st test
+        self.firstSuccess = 0 # The number of times the user succeeded to the first test -> will never be higher than 1 at the current version of this program
+        self.firstFail = 0 # The number of times the user failed before giving its first correct answer
         self.attempt = 0 # the number of times the user attempts a response (no matter if failed or succeeded) | WARNING: not taking into account the very forst test that enables the user to make his choice between Test / Learn / Drop
         self.user_response = '' # the response the the user will give
         #self.wordL = len(word) # length of the word
@@ -122,14 +128,20 @@ class Pair:
         2) Set the pair word for another testing.
         3) Increases the threshold of maximum testing if the user did not have have a single correct answer yet.
         """
-        self.fail += 1 # Actualize the number of failure for the word pair.
+        if self.firstTest==True: # if we are already in the step following the user's choice
+            self.fail += 1 # Actualize the number of failure(s) for the word pair.
+        else: # if the user still did not have a single correct answer yet
+            self.firstFail += 1 # Actualize the number of 1st failure(s) for the word pair.
         self.newTest = True # after a wrong answer, the user will have to try again ; we want him to give the correct answer at least once !
     
     def addSuccess(self):     
         """
         Actualize the number of success for the word pair
         """
-        self.success += 1
+        if self.firstTest==True: # if we are already in the step following the user's choice
+            self.success += 1
+        else: # if the user still did not have a single correct answer yet
+            self.firstSuccess += 1
         
     def choice(self,user_choice):       
         """
@@ -160,6 +172,6 @@ class Pair:
         
     def setFirstTest(self):
         """
-        Set the firstTest attribute True once the user has answered correctly the first time
+        Set the firstTest attribute True once the user has answered correctly for the first time
         """
         self.firstTest = True
