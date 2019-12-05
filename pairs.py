@@ -23,12 +23,16 @@ class Pair:
     - **Constructor Input**:
            :word: the french word which is string -> [key from the constants 'dico' dictionnary]
            :translate: the translated string of the word [value from the constants 'dico' dictionnary]
+           :firstTest: Boolean -> Will be True once the user gives the first correct answer (False by default)
+           :firstAttempt: The number of times the user needed to answer correctly to the very 1st test
            :attempt: the number of attempt the user will do to achieve a correct translation (starts at zero)
            :wordL: length of the french word
            :translateL: length of the translate word
            :drop: boolean (True or False). Default = False -> will become True once the user decides to drop the pair after a success
            :fail: integer [zero by default] => the number of times the user failed the word pair test
            :success: integer [zero by default] => the number of times the user gives the right answer
+           :maxTest: maximum number of times the user will be tested after having chosen to be
+           :maxLearn: maximum number of times the user will learn again a word pair after having chosen it
            :newTest: boolean [True or False] => Default = False => True when the user will decide to test again the word pair
            :newLearn: boolean [True or False] => Default = False => True when the user will decide to learn again the word pair
            :allUserResponses: dictionnary {1:'', 2:'', 3:'', 4:'', 5:''} that will save all responses attempted by the user 
@@ -47,7 +51,9 @@ class Pair:
         # ---------------------- #
         self.word = word
         self.translate = translate
-        self.attempt = 0 # the number of times the user attempts a response (no matter if failed or succeeded)
+        self.firstTest = False # Will be True once the user gives the first correct answer
+        self.firstAttempt = 0 # The number of times the user needed to answer correctly to the very 1st test
+        self.attempt = 0 # the number of times the user attempts a response (no matter if failed or succeeded) | WARNING: not taking into account the very forst test that enables the user to make his choice between Test / Learn / Drop
         self.user_response = '' # the response the the user will give
         #self.wordL = len(word) # length of the word
         #self.translateL = len(translate) # length of the correct translated word
@@ -57,7 +63,7 @@ class Pair:
         self.success = 0 # the number of times the user gives the right answer
         self.test = 0 # maximum 2 times
         self.learn = 0 # maximum 2 times
-        self.maxTest = 3 # This value may change during the program according to the user performance -> flexible threshold
+        self.maxTest = 2 # this value will never change -> fixed threshold
         self.maxLearn = 2 # This value will never change -> fixed threshold 
         self.newTest = False # True when the user will decide to test again the word pair
         self.newLearn = False # True when the user will decide to learn again the word pair
@@ -69,17 +75,13 @@ class Pair:
             :user_response: the answer attempted by the user
             :turn: in which turn of the main loop are we
         """        
-        self.attempt += 1 # the user performs a new attempt
+        if self.firstTest==True: # if we are already in the step following the user's choice
+            self.attempt += 1 # the user performs a new attempt
+        else: # if the user did not give a correct answer yet
+            self.firstAttempt += 1 # actualize the first attempt counter
         self.user_response = user_response.lower().strip() # on set tous les caractères en minuscule ET on enlève les éventuels espaces au début et à la fin du mot (pour réduire les éventuels biais dus aux erreurs de frappe)
         #self.user_responseL = len(self.user_response) 
-        self.allUserResponses[turn] = self.user_response # save the response in the responses dictionnary to keep track
-        
-    def resetResponse(self):      
-        """
-        Reset the user response for a new test / attempt
-        """
-        self.user_response = ''
-        #self.user_responseL = len(self.user_response)
+        self.allUserResponses[turn] = "**TEST** "+self.user_response # save the response in the responses dictionnary to keep track
         
     def checkAnswer(self):       
         """
@@ -122,8 +124,6 @@ class Pair:
         """
         self.fail += 1 # Actualize the number of failure for the word pair.
         self.newTest = True # after a wrong answer, the user will have to try again ; we want him to give the correct answer at least once !
-        if self.success==0: # If the user did not have have a single correct answer yet
-            self.maxTest += 1 # increases the threshold of maximum testing
     
     def addSuccess(self):     
         """
@@ -149,10 +149,17 @@ class Pair:
         """
         set lest = test + 1
         """       
-        self.test += 1 #  The threshold is maxTest
+        if self.firstTest==True: # if we are already testing AFTER the user's choice
+            self.test += 1 #  The threshold is maxTest
         
     def setLearn(self):       
         """
         reset Learn = learn + 1
         """       
         self.learn += 1 # The threshold is maxLearn
+        
+    def setFirstTest(self):
+        """
+        Set the firstTest attribute True once the user has answered correctly the first time
+        """
+        self.firstTest = True

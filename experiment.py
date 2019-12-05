@@ -115,7 +115,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
             # --------------------- #
             # TESTING THE PAIR WORD #
             # --------------------- #
-            elif pair.newLearn == False and pair.newTest == True and pair.test < pair.maxTest or i==1: # If the user chose to test agin the pair word after its first correct answer AND if he has not reached the learning threshold yet OR If it is the very first time (first turn of the main while loop)
+            elif (pair.newLearn == False and pair.newTest == True and pair.test < pair.maxTest) or i==1: # If the user chose to test agin the pair word after its first correct answer AND if he has not reached the learning threshold yet OR If it is the very first time (first turn of the main while loop)
                 test = pair.word+'\t\t 1ere lettre = '+pair.translate[0] # le mot en français
                 qstim = TextStim(disp, text=test, pos=qpos, height=24) # stimulus texte
                 qstim.draw() # dessiner la pair de mots
@@ -126,6 +126,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 done = False # On commence undone (sujet n'a pas terminé, i.e. n'a pas fait enter)
                 DLT = False # Drop / Learn / Test
                 pair.setTest() # actualize the test property of the pair object
+                
                 
                 # ----------------------------------------------------- #
                 # THIRD MAIN LOOP - WHILE THE USER'S ANSWER IS NOT DONE #
@@ -183,7 +184,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     # FOURTH MAIN LOOP ; WHILE THE CHOICE CANNOT BE INTERPRETED     #
                     # let the user choose what he wants do to : Test / Learn / Drop #
                     # ------------------------------------------------------------- # 
-                    if pair.newTest==False and pair.newLearn==False: # If it is the very first time the user gives the correct answer
+                    if pair.firstTest == False: # If it is the very first time the user gives the correct answer
                         choose = 'test=1\t\t\tlearn=2\t\t\tdrop=3' # L'utilisateur choisit s'il veut drop, learn ou test       
                         choice = '' # the chocie selected by the user - On commence avec une chaîne vide
                         while choice not in code_choice.keys(): # while the choice is not one understood by thze program (other than 1,2 or 3)
@@ -218,8 +219,9 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                             if choice in code_choice.keys(): # if the choice is compatible the dictionnary key
                                 pair.choice(code_choice[choice]) # Actualize the properties of the pair word
                             else: # if the kes is not compatible
-                                DLT = False # We have to continue the while loop
-
+                                DLT = False # We have to continue the while loop   
+                        pair.setFirstTest() # Change firstTest attribute of the pair True
+                        
 I = i # we save the number of turns the while loop did          
 disp.close() # close the display 
             
@@ -239,10 +241,10 @@ disp.close() # close the display
 #with open('retrieval_practice_results_'+str(datetime.now())+'.csv') as f: # open a CSV file to write the results
 with open('retrieval_practice_results.csv','w') as f: # open a CSV file to write the results -> 'w' is for 'write' -> we do not open an existing file, but create a new one
     response_header = '\t'.join(['response'+str(i+1) for i in range(I)]) # I is equal to the last iteration of the main while loop => gives one big string containing tabs (\t) thanks to the join function
-    f.write('word\ttranslation\t'+response_header+'\tattempt\tsuccess\tfailure\n') # write the header of the table
+    f.write('word\ttranslation\t'+response_header+'\t1st attempt\tattempt\tsuccess\tfailure\n') # write the header of the table
     for pair in LISTE: # pour chaque pair de mot
         AUR = '\t'.join([pair.allUserResponses[i+1] for i in range(I)]) # AUR = all user responses for this word pair
-        f.write(pair.word+'\t'+pair.translate+'\t'+AUR+'\t'+str(pair.attempt)+'\t'+str(pair.success)+'\t'+str(pair.fail)+'\n') # write all results for the word pair in a row
+        f.write(pair.word+'\t'+pair.translate+'\t'+AUR+'\t'+str(pair.firstAttempt)+'\t'+str(pair.attempt)+'\t'+str(pair.success)+'\t'+str(pair.fail)+'\n') # write all results for the word pair in a row
 
  
 #################

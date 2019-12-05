@@ -1,5 +1,5 @@
-word	translation	response1	response2	response3	response4	response5	attempt	success	failure
-renard	fox	fox	**LEARN**	**LEARN**	**FINISHED**	**FINISHED**	1	1	0
-chat	cat	cat	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	1	1	0
-chien	dog	dog	dog	dog	**FINISHED**	**FINISHED**	3	3	0
-loup	wolf	zzzz	wolf	tttt	wolf	**FINISHED**	4	2	2
+word	translation	response1	response2	response3	response4	response5	response6	1st attempt	attempt	success	failure
+loup	wolf	**TEST** wolf	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	1	0	1	0
+chat	cat	**TEST** cat	**TEST** cat	**TEST** rrr	**FINISHED**	**FINISHED**	**FINISHED**	1	2	2	1
+chien	dog	**TEST** rrr	**TEST** uuuuu	**TEST** dog	**TEST** dog	**TEST** dog	**FINISHED**	3	2	3	2
+renard	fox	**TEST** fox	**LEARN**	**LEARN**	**FINISHED**	**FINISHED**	**FINISHED**	1	0	1	0
