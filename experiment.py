@@ -44,6 +44,13 @@ core.wait(5) # delay of 10 seconds before passing to the learning phase
 
 ##################
 ##################
+#    PRE-TEST    #
+##################
+##################
+
+
+##################
+##################
 # LEARNING PHASE #
 ##################
 ##################
@@ -149,37 +156,47 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     respstim.draw() # réafficher la réponse au stimulus
                     disp.flip() # update the monitor
                     core.wait(0.01) # add a little lag to avoid little freez and/or bug
-        
+                 
+                # ------------------------------------------------------ #
+                # CHECK IF WE ARE STILL IN THE FIRST TEST FOR THIS PAIR  #
+                # SHOW THE RESPONSE AND CORRECT ANSWER TO THE USER       #
+                # ------------------------------------------------------ #
+                if pair.firstTest == False: # If it is the very first time the user gives the correct answer
+                    if feedback==True: # Does the subject benefits of a feed back after an answer ?
+                        check = 'traduction = '+pair.translate+'\n votre reponse = '+pair.user_response # créer une question
+                        qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
+                        qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
+                        qstim.draw() # dessiner la question
+                        disp.flip() # passer au screen au suivant -> on met la question par-dessus
+                        core.wait(2) # delay of 10 seconds before passing to the learning phase
+                    
                 # ------------------------------------------------------ #
                 # ADD THE USER RESPONSE IN THE PAIR OBJECT               #
                 # RESPONSE CHECK - WHAT ACTION THE SUBJECT WILL CHOOSE ? #
-                # SHOW THE RESPONSE AND CORRECT ANSWER TO THE USER       #
-                # ------------------------------------------------------ #
-                pair.addResponse(response,i) # add the user response in the pair object (no matter if the response is correct or wrong)
-                if feedback==True: # Does the subject benefits of a feed back after an answer ?
-                    check = 'traduction = '+pair.translate+'\n votre reponse = '+pair.user_response # créer une question
-                    qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-                    qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
-                    qstim.draw() # dessiner la question
-                    disp.flip() # passer au screen au suivant -> on met la question par-dessus
-                    core.wait(2) # delay of 10 seconds before passing to the learning phase
-        
-                # ------------------------------------------------------------------ #
                 # CHECK IF THE USER RESPONSE IS CORRECT OR WRONG                     #
                 # ADD SUCCESS OR FAILURE IN THE WORD PAIR OBJECT ACCORDING TO CHECK  #
                 # ------------------------------------------------------------------ #
+                pair.addResponse(response,i) # add the user response in the pair object (no matter if the response is correct or wrong)
                 if pair.checkAnswer()==False: # if the answer is NOT correct 
                     pair.addFail() # fail = fail + 1 | => Will also set the word pair for a new test | => increases the threshold of maximum testing
-                    """
-                    to implement here:
-                    display some message to the user
-                    """
+                    if feedback==True: # Does the subject benefits of a feed back after an answer ?
+                        check = 'Vous n\'avez malheureusement pas ecrit le bon mot.'
+                        qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
+                        qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
+                        qstim.draw() # dessiner la question
+                        disp.flip() # passer au screen au suivant -> on met la question par-dessus
+                        core.wait(2) # delay of 10 seconds before passing to the learning phase
+                    
                 else: # if the answer is correct 
                     pair.addSuccess() # success = success + 1    
-                    """
-                    to implement here:
-                    display some message to the user
-                    """
+                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
+                        check = 'Bravo ! Vous avez ecrit correctement le bon mot.' 
+                        qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
+                        qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
+                        qstim.draw() # dessiner la question
+                        disp.flip() # passer au screen au suivant -> on met la question par-dessus
+                        core.wait(2) # delay of 10 seconds before passing to the learning phase
+                    
                     
                     # --------------------------------------------------------------- #
                     # CASE IF IT IS THE FIRST TIME THE USER GIVES THE CORRECT ANSWER  #
@@ -224,7 +241,19 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                                 DLT = False # We have to continue the while loop   
                         pair.setFirstTest() # Change firstTest attribute of the pair True
                         
-I = i # we save the number of turns the while loop did          
+
+# ----------------------------------------- #
+# ENDING : DISPLAY A THANK YOU MESSAGE      #
+# SAVE THE NUMBER OF TURNS FOR THE RESULTS  #
+# THEN CLOSE THE DISPLAY                    #
+# ----------------------------------------- # 
+I = i # we save the number of turns the while loop did   
+message = 'Merci pour votre participation !' # texte du message
+mqpos = (0, int(DISPSIZE[1]*0.2)) # position du message
+qstim = TextStim(disp, text=check, pos=mpos, height=24) # stimulus texte
+qstim.draw() # dessiner la question
+disp.flip() # passer au screen au suivant -> on met la question par-dessus
+core.wait(2) # delay of 10 seconds before passing to the learning phase       
 disp.close() # close the display 
             
 """    
