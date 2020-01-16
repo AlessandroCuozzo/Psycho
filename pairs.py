@@ -126,7 +126,6 @@ class Pair:
         """
         1) Actualize the number of failure for the word pair.
         2) Set the pair word for another testing.
-        3) Increases the threshold of maximum testing if the user did not have have a single correct answer yet.
         """
         if self.firstTest==True: # if we are already in the step following the user's choice
             self.fail += 1 # Actualize the number of failure(s) for the word pair.
@@ -166,7 +165,7 @@ class Pair:
         
     def setLearn(self):       
         """
-        reset Learn = learn + 1
+        set Learn = learn + 1
         """       
         self.learn += 1 # The threshold is maxLearn
         

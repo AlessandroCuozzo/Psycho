@@ -103,7 +103,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
             # ---------------------- #
             # LEARNING THE PAIR WORD #
             # ---------------------- #
-            if pair.newLearn == True and pair.newTest == False and pair.learn < pair.maxLearn: # the user chose to learn this pair after its first correct answer AND if he has not reached the learning threshold yet
+            if pair.newLearn==True and pair.learn<pair.maxLearn: # the user chose to learn this pair after its first correct answer AND if he has not reached the learning threshold yet
                 learn = pair.word+'\t\t\t'+pair.translate # le mot en français + 3 tabs (espacements + la traduction)
                 qstim = TextStim(disp, text=learn, pos=qpos, height=24) # stimulus texte
                 qstim.draw() # dessiner la pair de mots
@@ -116,7 +116,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
             # --------------------- #
             # TESTING THE PAIR WORD #
             # --------------------- #
-            elif (pair.newLearn == False and pair.newTest == True and pair.test < pair.maxTest) or i==1: # If the user chose to test agin the pair word after its first correct answer AND if he has not reached the learning threshold yet OR If it is the very first time (first turn of the main while loop)
+            elif (pair.newLearn==False and pair.newTest==True and pair.test<pair.maxTest) or i==1: # If the user chose to test agin the pair word after its first correct answer AND if he has not reached the learning threshold yet OR If it is the very first time (first turn of the main while loop)
                 test = pair.word+'\t\t 1ere lettre = '+pair.translate[0] # le mot en français
                 qstim = TextStim(disp, text=test, pos=qpos, height=24) # stimulus texte
                 qstim.draw() # dessiner la pair de mots
@@ -181,11 +181,11 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     display some message to the user
                     """
                     
-                    # ------------------------------------------------------------- #
-                    # CASE IF IT THE FIRST THE USER GIVES THE CORRECT ANSWER        #
-                    # FOURTH MAIN LOOP ; WHILE THE CHOICE CANNOT BE INTERPRETED     #
-                    # let the user choose what he wants do to : Test / Learn / Drop #
-                    # ------------------------------------------------------------- # 
+                    # --------------------------------------------------------------- #
+                    # CASE IF IT IS THE FIRST TIME THE USER GIVES THE CORRECT ANSWER  #
+                    # FOURTH MAIN LOOP ; WHILE THE CHOICE CANNOT BE INTERPRETED       #
+                    # let the user choose what he wants do to : Test / Learn / Drop   #
+                    # --------------------------------------------------------------- # 
                     if pair.firstTest == False: # If it is the very first time the user gives the correct answer
                         choose = 'test=1\t\t\tlearn=2\t\t\tdrop=3' # L'utilisateur choisit s'il veut drop, learn ou test       
                         choice = '' # the chocie selected by the user - On commence avec une chaîne vide
