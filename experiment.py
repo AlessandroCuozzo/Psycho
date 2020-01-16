@@ -92,6 +92,14 @@ while response != pretest: # while the answer is not correct
     core.wait(2) # delay of 10 seconds before passing to the learning phase
                     
         
+"""    
+##############################################################################################################################
+##############################################################################################################################
+##############################################################################################################################
+##############################################################################################################################
+""" 
+
+    
 ####################
 ####################
 # REAL TEST BEGINS #
@@ -154,9 +162,9 @@ qstim.draw() # dessiner la question
 disp.flip() # passer au screen au suivant -> on met la question par-dessus
 core.wait(5) # delay of 10 seconds before passing to the learning phase
 
-# ------------------------------------------------------------------------------------ #
-# FIRST MAIN LOOP - THE STEP 2 IS REPEATED UNTIL THE USER IS DONE WITH EVERY WORD PAIR #
-# ------------------------------------------------------------------------------------ # 
+# ----------------------------------------------------------------------------------- #
+# FIRST MAIN LOOP - THIS STEP IS REPEATED UNTIL THE USER IS DONE WITH EVERY WORD PAIR #
+# ----------------------------------------------------------------------------------- # 
 i = 0
 while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to every pair at least once 
     i += 1 # number of turns of the loop => i will be reused to know at which turn of the loop we are for each response (to save in the results)
