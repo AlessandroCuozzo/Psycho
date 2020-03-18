@@ -13,7 +13,7 @@ Created on Tue Aug 13 15:42:22 2019
 #import time # import the time modules 
 from constants import DISPSIZE, dico, code_choice, code_choice_reverse, pretest # import the pre-determined constants
 from pairs import Pair # import the Pair class with its methods
-from psychopy.visual import Window, TextStim
+from psychopy.visual import Window, TextStim, ImageStim
 from psychopy.event import waitKeys
 from psychopy import core
 from random import shuffle # the random module allows to use many hazard-related functions
@@ -33,13 +33,15 @@ from datetime import datetime
 # visual settings #
 # --------------- # 
 disp = Window (size=DISPSIZE, units='pix', fullscr=True) # créer une fenêtre pour montrer des choses à l'écran => unité est en Pixel
-PRETEST = 'Nous allons faire un pre-test. Essayer d\'ecrire le mot ci-dessous :\n'+pretest # créer une question
+PRETEST = u'Nous allons faire un pré-test. Essayer d\'écrire le mot ci-dessous :\n'+pretest # créer une question
 qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
+#qstim = ImageStim(disp, image='images/img1.gif')
 qstim = TextStim(disp, text=PRETEST, pos=qpos, height=24) # stimulus texte -> pre_test is imported from constants.py
 qstim.draw() # dessiner la pair de mots
 disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
 core.wait(0.01) # delay of 10 seconds before passing to the next pair
-respstim = TextStim(disp, text='', height=24) # boite réponse (to be completed by the user)
+#respstim = ImageStim(disp, image='images/img1.gif')
+respstim = TextStim(disp, text='', pos=qpos, height=24) # boite réponse (to be completed by the user)
 response = '' # the response attempted by the user - On commence avec une réponse vide
 
 # ----------------------------------- #
@@ -47,7 +49,9 @@ response = '' # the response attempted by the user - On commence avec une répon
 # ----------------------------------- #
 while response != pretest: # while the answer is not correct
     response = '' # the response written by the user - On commence avec une chaîne vide
+    #respstim = ImageStim(disp, image='images/img1.gif')
     respstim = TextStim(disp, text='', height=24) # stimulus texte  
+    #qstim = ImageStim(disp, image='images/img1.gif')
     qstim = TextStim(disp, text=PRETEST, pos=qpos, height=24) # stimulus texte
     qstim.draw() # dessiner la question
     disp.flip() # passer au screen au suivant -> on met la question par-dessus
@@ -69,6 +73,7 @@ while response != pretest: # while the answer is not correct
             response = response[0:-1] #remove last character of the response
         if key == 'return': # if the key was non of the above, check si c'est enter
             done = True # set done to True
+        #respstim.setImage(response) # actualiser la user response
         respstim.setText(response) # actualiser la user response
         qstim.draw() # réafficher la question stimulus
         respstim.draw() # réafficher la réponse au stimulus
@@ -80,11 +85,11 @@ while response != pretest: # while the answer is not correct
     # DISPLAY A MESSAGE TO THE USER ACCORDING TO THE ANSWER   #
     # ------------------------------------------------------- #
     if response==pretest: # if the answer is correct 
-        check = 'Bravo ! Vous avez ecrit correctement le bon mot. Nous allons maintenant pouvoir commencer le test.' 
+        check = u'Bravo ! Vous avez écrit correctement le bon mot. Nous allons maintenant pouvoir commencer le test.' 
     else: # if the answer is NOT correct 
         response = '' # reset response
         done = False # The subject will have to start again
-        check = 'Vous n\'avez malheureusement pas ecrit le bon mot.\nReessayez.'
+        check = u'Vous n\'avez malheureusement pas écrit le bon mot.\nRéessayez.'
     qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
     qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
     qstim.draw() # dessiner la question
@@ -115,11 +120,12 @@ for pair in dico: # pour chaque pair de mots présente dans le dictionnaire du f
     LISTE.append(Pair(pair,dico[pair])) # pair is the dico key (french word) ; dico[pair] is the value of the key (corresponding translated word)
 shuffle(LISTE) # mélange la liste de mots -> ordre au hasard
 feedback = True # can be set to True or False
-        
+firstLetter = True # can be set to True or False
+
 # --------------- #
 # VISUAL SETTINGS #
 # --------------- #
-question = 'Vous aurez 10 secondes pour apprendre chaque pair de mots' # créer une question
+question = 'Vous aurez 10 secondes pour apprendre chaque pair de mots.' # créer une question
 qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
 qstim = TextStim(disp, text=question, pos=qpos, height=24) # stimulus texte
 qstim.draw() # dessiner la question
@@ -155,7 +161,7 @@ for pair in LISTE: # pour chaque pair de mot
 # -------------------------- #
 # testing phase instructions #
 # -------------------------- # 
-question = 'Vous aurez 10 secondes pour traduire chaque mot' # créer une question
+question = 'Vous aurez 10 secondes pour traduire chaque mot.' # créer une question
 qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
 qstim = TextStim(disp, text=question, pos=qpos, height=24) # stimulus texte / 24 pixels
 qstim.draw() # dessiner la question
@@ -196,11 +202,15 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 pair.setLearn() # # actualize the learn property of the pair object
             
             
-            # --------------------- #
-            # TESTING THE PAIR WORD #
-            # --------------------- #
+            # --------------------------------------------------------------- #
+            # TESTING THE PAIR WORD                                           #
+            # CHECK IF WE DECIDED TO GIVE THE TRANSLATION FIRST LETTER OR NOT #
+            # --------------------------------------------------------------- #
             elif (pair.newLearn==False and pair.newTest==True and pair.test<pair.maxTest) or i==1: # If the user chose to test agin the pair word after its first correct answer AND if he has not reached the learning threshold yet OR If it is the very first time (first turn of the main while loop)
-                test = pair.word+'\t\t 1ere lettre = '+pair.translate[0] # le mot en français
+                if firstLetter==True: # Do we give the student the first letter of the translation ?
+                    test = pair.word+u'\t\t 1ère lettre = '+pair.translate[0] # le mot en français => avec la 1ère lettre du mot comme indice
+                else: # we don't give the first letter 
+                    test = pair.word # le mot en français => sans la 1ère lettre comme indice
                 qstim = TextStim(disp, text=test, pos=qpos, height=24) # stimulus texte
                 qstim.draw() # dessiner la pair de mots
                 disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
@@ -241,37 +251,39 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 pair.addResponse(response,i) # add the user response in the pair object (no matter if the response is correct or wrong)
                 if pair.firstTest == False: # If it is the very first time the user gives the correct answer
                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
-                        check = 'traduction = '+pair.translate+'\n votre reponse = '+pair.user_response # créer une question
-                        qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-                        qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
-                        qstim.draw() # dessiner la question
-                        disp.flip() # passer au screen au suivant -> on met la question par-dessus
-                        core.wait(2) # delay of 10 seconds before passing to the learning phase
-                    
+                        check = 'traduction = '+pair.translate+u'\n votre réponse = '+pair.user_response+'\n\n' # créer une question
+                        #qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
+                        #qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
+                        #qstim.draw() # dessiner la question
+                        #disp.flip() # passer au screen au suivant -> on met la question par-dessus
+                        #core.wait(2) # delay of 10 seconds before passing to the learning phase
+                    else: # In case this is not the first test
+                        check = '' # we set an empty string for check -> we need it to display both the user answer and the Bravo/Wrong phrase in the same screen
                 # ------------------------------------------------------------------ #
                 # RESPONSE CHECK - WHAT ACTION THE SUBJECT WILL CHOOSE ?             #
                 # CHECK IF THE USER RESPONSE IS CORRECT OR WRONG                     #
+                # CHECK IF WE DECIDED TO GIVE A FEEDBACK OR NOT                      #
                 # ADD SUCCESS OR FAILURE IN THE WORD PAIR OBJECT ACCORDING TO CHECK  #
                 # ------------------------------------------------------------------ #
                 if pair.checkAnswer()==False: # if the answer is NOT correct 
                     pair.addFail() # fail = fail + 1 | => Will also set the word pair for a new test | => increases the threshold of maximum testing
                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
-                        check = 'Vous n\'avez malheureusement pas ecrit le bon mot.'
+                        check += u'Vous n\'avez malheureusement pas écrit le bon mot.' # Add Wrong to check
                         qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
                         qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
                         qstim.draw() # dessiner la question
                         disp.flip() # passer au screen au suivant -> on met la question par-dessus
-                        core.wait(2) # delay of 10 seconds before passing to the learning phase
+                        core.wait(5) # delay of 10 seconds before passing to the learning phase
                     
                 else: # if the answer is correct 
                     pair.addSuccess() # success = success + 1    
                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
-                        check = 'Bravo ! Vous avez ecrit correctement le bon mot.' 
+                        check += u'Bravo ! Vous avez écrit correctement le bon mot.' # Add Bravo to check
                         qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
                         qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
                         qstim.draw() # dessiner la question
                         disp.flip() # passer au screen au suivant -> on met la question par-dessus
-                        core.wait(2) # delay of 10 seconds before passing to the learning phase
+                        core.wait(5) # delay of 10 seconds before passing to the learning phase
                     
                     
                     # --------------------------------------------------------------- #

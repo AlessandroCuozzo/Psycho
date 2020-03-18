@@ -35,16 +35,16 @@ dico = {'chat': 'cat', # ascii codec -> ça bug avec les accents
         'crapaud': 'toad',
         'tigre': 'tiger',
         'chauve-souris': 'bat',
-        'araignee': 'spider',
+        u'araignée': 'spider',
         'fourmille': 'ant',
-        'guepe': 'wasp',
+        u'guêpe': 'wasp',
         'abeille': 'bee',
         'poulpe': 'octopus',
         'baleine': 'whale',
         'serpent': 'snake',
-        'herisson': 'hedgehog',     
+        u'hérisson': 'hedgehog',     
         'singe': 'monkey',
-        'ane': 'donkey',
+        u'âne': 'donkey',
         'cheval': 'horse'
         }
 """
