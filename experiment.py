@@ -40,10 +40,6 @@ def userResponse(response, done, qpos, size, disp, image):
         :size: text size for user response
         :disp: the psychopy display screen
         :image: the stimulus image
-        
-    - **outpu**:
-        :response: the user response
-        :done: True or false
     """
     
     # --------------------------------------- #
@@ -63,17 +59,14 @@ def userResponse(response, done, qpos, size, disp, image):
         # Check for keypresses                #
         # ----------------------------------- # 
         while not done: # loop until done == True
-            resplist = waitKeys (maxWait=float('inf'), keyList=None, timeStamped=True)
+            resplist = waitKeys(maxWait=float('inf'), keyList=None, timeStamped=True)
             key, presstime = resplist[0] # use only the first in the returned list of keypresses -> resplist[0] is the first element in the resplist list   
             response += key #Ajouter la lettre tapée à la réponse
             done = True # set done to True
-            respstim.setText() # actualiser la user response
             qstim.draw() # réafficher la question stimulus
             respstim.draw() # réafficher la réponse au stimulus
             disp.flip() # update the monitor
             core.wait(0.01) # add a little lag to avoid little freez and/or bug
-
-    return response, done
 
 
 # --------------------------------------------------------------------------- #
@@ -114,7 +107,7 @@ def tapeAnswer(response, done):
         disp.flip() # update the monitor
         core.wait(0.01) # add a little lag to avoid little freez and/or bug
 
-    return response.capitalize(), done
+    return response.capitalize(), done # 1ère lettre en majuscule
 
 ##################
 ##################
@@ -131,7 +124,7 @@ size = 24 # text size # 36
 color = 'darkblue' # text color
 #qpos= (0, int(DISPSIZE[1]*-0.2)) # position de la question
 qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-response, done = userResponse('', False, qpos, size, disp, 'images/img1.gif') # call the userResponse -> double while loop to save the user traped response
+userResponse('', False, qpos, size, disp, 'images/img1.gif') # call the userResponse -> double while loop to save the user traped response
 
 # ----------------------------------- #
 # SETTING FOR THE PRE-TEST            #
@@ -152,9 +145,9 @@ while response != pretest: # while the answer is not correct
     # DISPLAY A MESSAGE TO THE USER ACCORDING TO THE ANSWER   #
     # ------------------------------------------------------- #
     if response==pretest: # if the answer is correct 
-        uselessResponse, uselessDone = userResponse('', False, qpos, size, disp, 'images/img3.gif') # call the userResponse -> double while loop to save the user traped response
+        userResponse('', False, qpos, size, disp, 'images/img3.gif') # call the userResponse -> double while loop to save the user traped response
     else: # if the answer is NOT correct 
-        uselessResponse, uselessDone = userResponse('', False, qpos, size, disp, 'images/img4.gif') # call the userResponse -> double while loop to save the user traped response
+        userResponse('', False, qpos, size, disp, 'images/img4.gif') # call the userResponse -> double while loop to save the user traped response
     
         
 """    
@@ -185,7 +178,7 @@ firstLetter = True # can be set to True or False
 # -------------- #
 # LEARNING PHASE #
 # -------------- #
-response, done = userResponse('', False, qpos, size, disp, 'images/img5.gif') # call the userResponse -> double while loop to save the user traped response
+userResponse('', False, qpos, size, disp, 'images/img5.gif') # call the userResponse -> double while loop to save the user traped response
 for pair in LISTE: # pour chaque pair de mot
     learn = pair.word+'\t\t\t'+pair.translate # le mot en français + 3 tabs (espacements + la traduction)
     qstim = TextStim(disp, text=learn, pos=qpos, height=size) # stimulus texte
@@ -382,8 +375,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
 # THEN CLOSE THE DISPLAY                    #
 # ----------------------------------------- # 
 I = i # we save the number of turns the while loop did   
-message = 'Merci pour votre participation !' # texte du message
-qstim = TextStim(disp, text=message, pos=qpos, height=size) # stimulus texte
+qstim = ImageStim(disp, image='images/img8.gif')
 qstim.draw() # dessiner la question
 disp.flip() # passer au screen au suivant -> on met la question par-dessus
 core.wait(2) # delay of 10 seconds before passing to the learning phase       
