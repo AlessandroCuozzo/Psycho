@@ -19,6 +19,102 @@ from psychopy import core
 from random import shuffle # the random module allows to use many hazard-related functions
 from datetime import datetime
 
+###################
+###################
+#    FUNCTIONS    #
+###################
+###################
+
+
+# ------------------------------------------------------------------------------------------------- #
+# Function that will be called every time the user needs to press a key to pass to the next display #
+# Double while loop                                                                                 #
+# ------------------------------------------------------------------------------------------------- #
+def userResponse(response, done, qpos, size, disp, image):
+    """
+    function called when the user will choose to drop, learn or test again a word pair -> only if the user response translation is correct
+    - **Input**:
+        :response: the user resonse (empty string at beginning)
+        :done: boolean (True / False) -> False at beginning
+        :qpos: text position for user response
+        :size: text size for user response
+        :disp: the psychopy display screen
+        :image: the stimulus image
+        
+    - **outpu**:
+        :response: the user response
+        :done: True or false
+    """
+    
+    # --------------------------------------- #
+    # WHILE THE WELCOME MESSAGE IS NOT PASSED #
+    # --------------------------------------- #
+    while len(response)==0: # while the user has not taped anything yet
+        response = '' # the response written by the user - On commence avec une chaîne vide
+        respstim = TextStim(disp, text='', pos=qpos, height=size) # stimulus texte  
+        qstim = ImageStim(disp, image=image)
+        qstim.draw() # dessiner la question
+        disp.flip() # passer au screen au suivant -> on met la question par-dessus
+        core.wait(0.01) # delay of 10 seconds before passing to the learning phase
+        done = False
+    
+        # ----------------------------------- #
+        # WHILE THE USER'S ANSWER IS NOT DONE #
+        # Check for keypresses                #
+        # ----------------------------------- # 
+        while not done: # loop until done == True
+            resplist = waitKeys (maxWait=float('inf'), keyList=None, timeStamped=True)
+            key, presstime = resplist[0] # use only the first in the returned list of keypresses -> resplist[0] is the first element in the resplist list   
+            response += key #Ajouter la lettre tapée à la réponse
+            done = True # set done to True
+            respstim.setText() # actualiser la user response
+            qstim.draw() # réafficher la question stimulus
+            respstim.draw() # réafficher la réponse au stimulus
+            disp.flip() # update the monitor
+            core.wait(0.01) # add a little lag to avoid little freez and/or bug
+
+    return response, done
+
+
+# --------------------------------------------------------------------------- #
+# Function that will be called every time the user is still taping his answer #
+# Single while loop                                                           #
+# --------------------------------------------------------------------------- #
+def tapeAnswer(response, done):
+
+    """
+    Function that will be called every time the user is still taping his answer
+    - **Input**:
+        :response: the user resonse (empty string at beginning)
+        :done: boolean (True / False) -> False at beginning
+        
+    - **outpu**:
+        :response: the user response
+        :done: True or false
+    """
+    
+    # ----------------------------------- #
+    # WHILE THE USER'S ANSWER IS NOT DONE #
+    # Check for keypresses                #
+    # ----------------------------------- # 
+    while not done: # loop until done == True
+        resplist = waitKeys(maxWait=float('inf'), keyList=None, timeStamped=True)
+        key, presstime = resplist[0] # use only the first in the returned list of keypresses -> resplist[0] is the first element in the resplist list   
+        if len(key) == 1: # Check si la longeur de la réponse (len) = 1
+            response += key #Ajouter la lettre tapée à la réponse => on ne tient pas compte des touches pour les majuscules ni de la touche escape
+        elif key == 'space': # Check if key is the space bar
+            response += ' ' # ajoute un espace
+        elif key == 'backspace' and len(response) > 0: # Check if the key's name was backspace AND si la réponse a au moins une lettre
+            response = response[0:-1] #remove last character of the response
+        if key == 'return': # if the key was non of the above, check si c'est enter
+            done = True # set done to True
+        respstim.setText(response.capitalize()) # actualiser la user response => 1ère lettre en majuscule
+        qstim.draw() # réafficher la question stimulus
+        respstim.draw() # réafficher la réponse au stimulus
+        disp.flip() # update the monitor
+        core.wait(0.01) # add a little lag to avoid little freez and/or bug
+
+    return response.capitalize(), done
 
 ##################
 ##################
@@ -26,76 +122,40 @@ from datetime import datetime
 ##################
 ##################
             
-# ------------------------ #
-# SETTING FOR THE PRE-TEST #
-# ------------------------ #
-# --------------- #
-# visual settings #
-# --------------- # 
+# ------------------------- #
+# WELCOME - visual settings #
+# ------------------------- # 
 disp = Window (size=DISPSIZE, units='pix', fullscr=True) # créer une fenêtre pour montrer des choses à l'écran => unité est en Pixel
-PRETEST = u'Nous allons faire un pré-test. Essayer d\'écrire le mot ci-dessous :\n'+pretest # créer une question
+size = 24 # text size # 36
+#size = 36 # text size # 36
+color = 'darkblue' # text color
+#qpos= (0, int(DISPSIZE[1]*-0.2)) # position de la question
 qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-#qstim = ImageStim(disp, image='images/img1.gif')
-qstim = TextStim(disp, text=PRETEST, pos=qpos, height=24) # stimulus texte -> pre_test is imported from constants.py
-qstim.draw() # dessiner la pair de mots
-disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
-core.wait(0.01) # delay of 10 seconds before passing to the next pair
-#respstim = ImageStim(disp, image='images/img1.gif')
-respstim = TextStim(disp, text='', pos=qpos, height=24) # boite réponse (to be completed by the user)
-response = '' # the response attempted by the user - On commence avec une réponse vide
+response, done = userResponse('', False, qpos, size, disp, 'images/img1.gif') # call the userResponse -> double while loop to save the user traped response
 
 # ----------------------------------- #
+# SETTING FOR THE PRE-TEST            #
 # WHILE THE PRE-TEST IS NOT SUCCEEDED #
 # ----------------------------------- #
+response = '' # the response attempted by the user - On commence avec une réponse vide
 while response != pretest: # while the answer is not correct
     response = '' # the response written by the user - On commence avec une chaîne vide
-    #respstim = ImageStim(disp, image='images/img1.gif')
-    respstim = TextStim(disp, text='', height=24) # stimulus texte  
-    #qstim = ImageStim(disp, image='images/img1.gif')
-    qstim = TextStim(disp, text=PRETEST, pos=qpos, height=24) # stimulus texte
+    respstim = TextStim(disp, text='', pos=qpos, height=size, color=color) # stimulus texte  
+    qstim = ImageStim(disp, image='images/img2.gif')
     qstim.draw() # dessiner la question
     disp.flip() # passer au screen au suivant -> on met la question par-dessus
     core.wait(0.01) # delay of 10 seconds before passing to the learning phase
-    done = False
-    
-    # ----------------------------------------------------- #
-    # THIRD MAIN LOOP - WHILE THE USER'S ANSWER IS NOT DONE #
-    # Check for keypresses                                  #
-    # ----------------------------------------------------- # 
-    while not done: # loop until done == True
-        resplist = waitKeys (maxWait=float('inf'), keyList=None, timeStamped=True)
-        key, presstime = resplist[0] # use only the first in the returned list of keypresses -> resplist[0] is the first element in the resplist list   
-        if len(key) == 1: # Check si la longeur de la réponse (len) = 1
-            response += key #Ajouter la lettre tapée à la réponse
-        elif key == 'space': # Check if key is the space bar
-            response += ' ' # ajoute un espace
-        elif key == 'backspace' and len(response) > 0: # Check if the key's name was backspace AND si la réponse a au moins une lettre
-            response = response[0:-1] #remove last character of the response
-        if key == 'return': # if the key was non of the above, check si c'est enter
-            done = True # set done to True
-        #respstim.setImage(response) # actualiser la user response
-        respstim.setText(response) # actualiser la user response
-        qstim.draw() # réafficher la question stimulus
-        respstim.draw() # réafficher la réponse au stimulus
-        disp.flip() # update the monitor
-        core.wait(0.01) # add a little lag to avoid little freez and/or bug
+    response, done = tapeAnswer(response, False) # While loop to taping the entire answer
 
     # ------------------------------------------------------- #
     # CHECK IF THE PRETEST IS SUCCEEDED OR NOT                #
     # DISPLAY A MESSAGE TO THE USER ACCORDING TO THE ANSWER   #
     # ------------------------------------------------------- #
     if response==pretest: # if the answer is correct 
-        check = u'Bravo ! Vous avez écrit correctement le bon mot. Nous allons maintenant pouvoir commencer le test.' 
+        uselessResponse, uselessDone = userResponse('', False, qpos, size, disp, 'images/img3.gif') # call the userResponse -> double while loop to save the user traped response
     else: # if the answer is NOT correct 
-        response = '' # reset response
-        done = False # The subject will have to start again
-        check = u'Vous n\'avez malheureusement pas écrit le bon mot.\nRéessayez.'
-    qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-    qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
-    qstim.draw() # dessiner la question
-    disp.flip() # passer au screen au suivant -> on met la question par-dessus
-    core.wait(2) # delay of 10 seconds before passing to the learning phase
-                    
+        uselessResponse, uselessDone = userResponse('', False, qpos, size, disp, 'images/img4.gif') # call the userResponse -> double while loop to save the user traped response
+    
         
 """    
 ##############################################################################################################################
@@ -122,24 +182,13 @@ shuffle(LISTE) # mélange la liste de mots -> ordre au hasard
 feedback = True # can be set to True or False
 firstLetter = True # can be set to True or False
 
-# --------------- #
-# VISUAL SETTINGS #
-# --------------- #
-question = 'Vous aurez 10 secondes pour apprendre chaque pair de mots.' # créer une question
-qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-qstim = TextStim(disp, text=question, pos=qpos, height=24) # stimulus texte
-qstim.draw() # dessiner la question
-disp.flip() # passer au screen au suivant -> on met la question par-dessus
-core.wait(5) # delay of 10 seconds before passing to the learning phase
-
-
 # -------------- #
 # LEARNING PHASE #
 # -------------- #
+response, done = userResponse('', False, qpos, size, disp, 'images/img5.gif') # call the userResponse -> double while loop to save the user traped response
 for pair in LISTE: # pour chaque pair de mot
     learn = pair.word+'\t\t\t'+pair.translate # le mot en français + 3 tabs (espacements + la traduction)
-    qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-    qstim = TextStim(disp, text=learn, pos=qpos, height=24) # stimulus texte
+    qstim = TextStim(disp, text=learn, pos=qpos, height=size) # stimulus texte
     qstim.draw() # dessiner la pair de mots
     disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
     core.wait(5) # delay of 10 seconds before passing to the next pair
@@ -162,8 +211,7 @@ for pair in LISTE: # pour chaque pair de mot
 # testing phase instructions #
 # -------------------------- # 
 question = 'Vous aurez 10 secondes pour traduire chaque mot.' # créer une question
-qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-qstim = TextStim(disp, text=question, pos=qpos, height=24) # stimulus texte / 24 pixels
+qstim = TextStim(disp, text=question, pos=qpos, height=size) # stimulus texte / 24 pixels
 qstim.draw() # dessiner la question
 disp.flip() # passer au screen au suivant -> on met la question par-dessus
 core.wait(5) # delay of 10 seconds before passing to the learning phase
@@ -194,7 +242,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
             # ---------------------- #
             if pair.newLearn==True and pair.learn<pair.maxLearn: # the user chose to learn this pair after its first correct answer AND if he has not reached the learning threshold yet
                 learn = pair.word+'\t\t\t'+pair.translate # le mot en français + 3 tabs (espacements + la traduction)
-                qstim = TextStim(disp, text=learn, pos=qpos, height=24) # stimulus texte
+                qstim = TextStim(disp, text=learn, pos=qpos, height=size) # stimulus texte
                 qstim.draw() # dessiner la pair de mots
                 disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
                 core.wait(5) # delay of 10 seconds before passing to the next pair
@@ -211,11 +259,11 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     test = pair.word+u'\t\t 1ère lettre = '+pair.translate[0] # le mot en français => avec la 1ère lettre du mot comme indice
                 else: # we don't give the first letter 
                     test = pair.word # le mot en français => sans la 1ère lettre comme indice
-                qstim = TextStim(disp, text=test, pos=qpos, height=24) # stimulus texte
+                qstim = TextStim(disp, text=test, pos=qpos, height=size) # stimulus texte
                 qstim.draw() # dessiner la pair de mots
                 disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
                 core.wait(0.01) # delay of 10 seconds before passing to the next pair
-                respstim = TextStim(disp, text='', height=24) # boite réponse (to be completed by the user)
+                respstim = TextStim(disp, text='', height=size) # boite réponse (to be completed by the user)
                 response = '' # the response attempted by the user - On commence avec une réponse vide
                 done = False # On commence undone (sujet n'a pas terminé, i.e. n'a pas fait enter)
                 DLT = False # Drop / Learn / Test
@@ -230,14 +278,14 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     resplist = waitKeys (maxWait=float('inf'), keyList=None, timeStamped=True)
                     key, presstime = resplist[0] # use only the first in the returned list of keypresses -> resplist[0] is the first element in the resplist list   
                     if len(key) == 1: # Check si la longeur de la réponse (len) = 1
-                        response += key #Ajouter la lettre tapée à la réponse
+                        response += key # Ajouter la lettre tapée à la réponse => on ne tient pas compte des touches pour les majuscules
                     elif key == 'space': # Check if key is the space bar
                         response += ' ' # ajoute un espace
                     elif key == 'backspace' and len(response) > 0: # Check if the key's name was backspace AND si la réponse a au moins une lettre
                         response = response[0:-1] #remove last character of the response
                     if key == 'return': # if the key was non of the above, check si c'est enter
                         done = True # set done to True
-                    respstim.setText(response) # actualiser la user response
+                    respstim.setText(response.capitalize()) # actualiser la user response => 1ère lettre en majuscule
                     qstim.draw() # réafficher la question stimulus
                     respstim.draw() # réafficher la réponse au stimulus
                     disp.flip() # update the monitor
@@ -269,8 +317,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     pair.addFail() # fail = fail + 1 | => Will also set the word pair for a new test | => increases the threshold of maximum testing
                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
                         check += u'Vous n\'avez malheureusement pas écrit le bon mot.' # Add Wrong to check
-                        qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-                        qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
+                        qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
                         qstim.draw() # dessiner la question
                         disp.flip() # passer au screen au suivant -> on met la question par-dessus
                         core.wait(5) # delay of 10 seconds before passing to the learning phase
@@ -279,8 +326,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     pair.addSuccess() # success = success + 1    
                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
                         check += u'Bravo ! Vous avez écrit correctement le bon mot.' # Add Bravo to check
-                        qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-                        qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
+                        qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
                         qstim.draw() # dessiner la question
                         disp.flip() # passer au screen au suivant -> on met la question par-dessus
                         core.wait(5) # delay of 10 seconds before passing to the learning phase
@@ -296,8 +342,8 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                         choice = '' # the chocie selected by the user - On commence avec une chaîne vide
                         while choice not in code_choice.keys(): # while the choice is not one understood by thze program (other than 1,2 or 3)
                             choice = '' # the chocie selected by the user - On commence avec une chaîne vide
-                            choicestim = TextStim(disp, text='', height=24) # stimulus texte  
-                            qstim = TextStim(disp, text=choose, pos=qpos, height=24) # stimulus texte
+                            choicestim = TextStim(disp, text='', height=size) # stimulus texte  
+                            qstim = TextStim(disp, text=choose, pos=qpos, height=size) # stimulus texte
                             qstim.draw() # dessiner la question
                             disp.flip() # passer au screen au suivant -> on met la question par-dessus
                             core.wait(0.01) # delay of 10 seconds before passing to the learning phase
@@ -337,8 +383,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
 # ----------------------------------------- # 
 I = i # we save the number of turns the while loop did   
 message = 'Merci pour votre participation !' # texte du message
-mpos = (0, int(DISPSIZE[1]*0.2)) # position du message
-qstim = TextStim(disp, text=message, pos=mpos, height=24) # stimulus texte
+qstim = TextStim(disp, text=message, pos=qpos, height=size) # stimulus texte
 qstim.draw() # dessiner la question
 disp.flip() # passer au screen au suivant -> on met la question par-dessus
 core.wait(2) # delay of 10 seconds before passing to the learning phase       
