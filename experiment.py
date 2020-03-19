@@ -333,7 +333,6 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 response = ''
                 if firstLetter==True: # Do we give the student the first letter of the translation ?
                     response += pair.translate[0] # le mot en français => avec la 1ère lettre du mot comme indice
-                print(response)
                 qstim = ImageStim(disp, image='images/Test.gif') # stimulus image
                 qstim2 = TextStim(disp, text=pair.word, pos=qpos3, height=size, color=color) # stimulus texte
                 respstim = TextStim(disp, text=response, pos=qpos, height=size, color=color) # boite réponse (to be completed by the user)
@@ -357,11 +356,18 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 pair.addResponse(response,i) # add the user response in the pair object (no matter if the response is correct or wrong)
                 if pair.checkAnswer()==False: # if the answer is NOT correct 
                     pair.addFail() # fail = fail + 1 | => Will also set the word pair for a new test | => increases the threshold of maximum testing
-                    if feedback==True: # Does the subject benefits of a feed back after an answer ?
-                        image = 'images/Oups.gif' # Ooups image
+                    if feedback==True or pair.firstTest==False or (feedback==True and pair.firstTest==True): # Does the subject benefits of a feed back after an answer ?
+                        if pair.firstTest==False: # the first test always benefits of the full feed-back
+                            image = 'images/Oups.gif' # Ooups image
+                            text = pair.word+space+pair.translate # word pair
+                            text2 = pair.user_response # answer written by the user
+                        else: # Only message saying 'Ouups
+                            image = 'images/OupsEmpty.gif' # Ooups image
+                            text = '' # empty string
+                            text2 = '' # empty string
                         qstim = ImageStim(disp, image=image) # stimulus image
-                        qstim2 = TextStim(disp, text=pair.word+space+pair.translate, pos=qpos4, height=size, color=color) # stimulus texte
-                        qstim3 = TextStim(disp, text=pair.user_response, pos=qpos5, height=size, color=color2) # stimulus texte
+                        qstim2 = TextStim(disp, text=text, pos=qpos4, height=size, color=color) # stimulus texte
+                        qstim3 = TextStim(disp, text=text2, pos=qpos5, height=size, color=color2) # stimulus texte
                         qstim.draw() # dessiner la question (image)
                         qstim2.draw() # dessiner la question (pair de mot)
                         qstim3.draw() # dessiner la question (user response)
@@ -369,12 +375,18 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                         userResponse('', False, qpos, image, 3) # call the userResponse -> double while loop to save the user traped response
                         core.wait(loadTime) # let psychopy breath...
                     
+                    
                 else: # if the answer is correct 
                     pair.addSuccess() # success = success + 1    
-                    if feedback==True: # Does the subject benefits of a feed back after an answer ?
-                        image = 'images/Bravo.gif' # Bravo image
+                    if feedback==True or pair.firstTest==False or (feedback==True and pair.firstTest==True): # Does the subject benefits of a feed back after an answer ?
+                        if pair.firstTest==False: # the first test always benefits of the full feed-back
+                            image = 'images/Bravo.gif' # Bravo image
+                            text = pair.word+space+pair.translate # word pair
+                        else: # Only message saying 'Bravo'
+                             image = 'images/BravoEmpty.gif' # Ooups image
+                             text = '' # empty string
                         qstim = ImageStim(disp, image=image) # stimulus image
-                        qstim2 = TextStim(disp, text=pair.word+space+pair.translate, pos=qpos6, height=size, color=color3) # stimulus texte
+                        qstim2 = TextStim(disp, text=text, pos=qpos6, height=size, color=color3) # stimulus texte
                         qstim3 = TextStim(disp, text='', pos=qpos, height=size, color=color2) # stimulus texte
                         qstim.draw() # dessiner la question (image)
                         qstim2.draw() # dessiner la question (pair de mot)

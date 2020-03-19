@@ -1,0 +1,9 @@
+word	translation	response1	response2	response3	response4	response5	1st_attempt	1st_success	1st_failure	attempt	success	failure
+Csirke	Poulet	**TEST** Poulet	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	1	1	0	0	0	0
+Fagyi	Glace	**TEST** Glace	**TEST** Glass	**TEST** Glace	**FINISHED**	**FINISHED**	1	1	0	2	1	1
+Sajt	Fromage	**TEST** Froma	**TEST** Fromage	**LEARN**	**LEARN**	**FINISHED**	2	1	1	0	0	0
+Bors	Poivre	**TEST** Poivre	**TEST** Poivre	**TEST** Poivre	**FINISHED**	**FINISHED**	1	1	0	2	2	0
+Rge
+5
+G
+D
