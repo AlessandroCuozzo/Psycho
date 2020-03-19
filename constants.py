@@ -169,7 +169,7 @@ dico = {'chat': 'cat', # ascii codec -> ça bug avec les accents
 # ---------------- #
 
 pretest = 'Train' # crocodile | Train = Vonat (Hongrois) 
-code_choice = {'1':'test', '2':'learn', '3':'drop'}
+code_choice = {'1':'learn', '2':'test', '3':'drop'}
 code_choice_reverse={}
 for duo in code_choice:
     code_choice_reverse[code_choice[duo]]=duo

@@ -25,7 +25,6 @@ from datetime import datetime
 ###################
 ###################
 
-
 # ------------------------------------------------------------------ #
 # Function that will be called to enter the user identification data #
 # Double while loop                                                  #
@@ -177,8 +176,6 @@ def tapeAnswer(response, done, realTest):
 ##################
 ##################
             
-
-
 # ------------------------- #
 # Initial & Visual settings #
 # ------------------------- # 
@@ -191,7 +188,7 @@ color = 'darkblue' # text color
 color2 = 'crimson' # text color
 color3 = 'green' # text color
 space = '\t\t\t\t' # space between the word and its translation when learning
-learnTime = 1 # time to given to memorize one pair word
+learnTime = 5 # time to given to memorize one pair word
 loadTime = 0.01 # time for spychopy displaying
 qpos = (0,int(DISPSIZE[1]*-0.2)) # position de la question
 qpos2 = (int(DISPSIZE[0]*-0.02),int(DISPSIZE[1]*-0.02)) # position de la question
@@ -205,7 +202,6 @@ qpos8 = (int(DISPSIZE[0]*0.3),int(DISPSIZE[1]*-0.35)) # position de la question
 # ---------------- #
 # WHO AM I - HELLO #
 # ---------------- # 
-
 userResponse('', False, qpos, 'images/Bonjour.gif', 1) # call the userResponse -> double while loop to save the user traped response
 ID = whoAmI('', False, qpos, 'images/ID.gif') # call the whoAmI -> double while loop to save the user traped response
 image = 'images/Age.gif'
@@ -293,17 +289,6 @@ for pair in LISTE: # pour chaque pair de mot
 #################
 #################
 
-"""
-# -------------------------- #
-# testing phase instructions #
-# -------------------------- # 
-question = 'Vous aurez 10 secondes pour traduire chaque mot.' # créer une question
-qstim = TextStim(disp, text=question, pos=qpos, height=size) # stimulus texte / 24 pixels
-qstim.draw() # dessiner la question
-disp.flip() # passer au screen au suivant -> on met la question par-dessus
-core.wait(5) # delay of 10 seconds before passing to the learning phase
-"""
-
 # ----------------------------------------------------------------------------------- #
 # FIRST MAIN LOOP - THIS STEP IS REPEATED UNTIL THE USER IS DONE WITH EVERY WORD PAIR #
 # ----------------------------------------------------------------------------------- # 
@@ -339,8 +324,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 core.wait(learnTime) # delay of 10 seconds before passing to the next pair
                 pair.addLearn(i) # Fill the pair object allUserResponses attribute with **LEARN** for the actual turn
                 pair.setLearn() # # actualize the learn property of the pair object
-            
-            
+                     
             # --------------------------------------------------------------- #
             # TESTING THE PAIR WORD                                           #
             # CHECK IF WE DECIDED TO GIVE THE TRANSLATION FIRST LETTER OR NOT #
@@ -362,8 +346,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 DLT = False # Drop / Learn / Test
                 pair.setTest() # actualize the test property of the pair object
                 response, done = tapeAnswer(response, False, True) # While loop to taping the entire answer
-                 
-                
+                          
                 # ------------------------------------------------------------------ #
                 # ADD THE USER RESPONSE IN THE PAIR OBJECT                           #
                 # RESPONSE CHECK - WHAT ACTION THE SUBJECT WILL CHOOSE ?             #
@@ -400,7 +383,6 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                         userResponse('', False, qpos, image, 3) # call the userResponse -> double while loop to save the user traped response
                         core.wait(loadTime) # let psychopy breath...
                     
-                    
                     # --------------------------------------------------------------- #
                     # CASE IF IT IS THE FIRST TIME THE USER GIVES THE CORRECT ANSWER  #
                     # FOURTH MAIN LOOP ; WHILE THE CHOICE CANNOT BE INTERPRETED       #
@@ -420,42 +402,18 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                             respstim.draw() # dessiner la question (user response)
                             disp.flip() # passer au screen au suivant -> on met la question par-dessus
                             #userResponse('', False, qpos, size, disp, image, 2) # call the userResponse -> double while loop to save the user traped response
-                            core.wait(loadTime) # let psychopy breath...
-                    
+                            core.wait(loadTime) # let psychopy breath...        
+                            choice, DLT = tapeAnswer(choice, DLT, True) # tapeAnswer function
                             
-                            choice, DLT = tapeAnswer(choice, DLT, True)
-                            
-                            """
-                            # ----------------------------------------------------------- #
-                            # THE USER WILL CHOOSE TO TEST, LEARN AGAIN OR DROP THZE PAIR #
-                            # FIFTTH MAIN LOOP - WHILE THE USER'S CHOICE IS NOT DONE      #
-                            # Check for keypresses                                        #
-                            # ----------------------------------------------------------- # 
-                            while not DLT: # loop DLT done == True
-                                resplist = waitKeys (maxWait=float('inf'), keyList=None, timeStamped=True)
-                                key, presstime = resplist[0] # use only the first in the returned list of keypresses -> resplist[0] is the first element in the resplist list   
-                                if len(key) == 1: # Check si la longeur de la réponse (len) = 1
-                                    choice += key #Ajouter la lettre tapée à la réponse
-                                elif key == 'space': # Check if key is the space bar
-                                    choice += ' ' # ajoute un espace
-                                elif key == 'backspace' and len(choice) > 0: # Check if the key's name was backspace AND si la réponse a au moins une lettre
-                                    choice = choice[0:-1] # remove last character of the response
-                                if key == 'return': # if the key was non of the above, check si c'est enter
-                                    DLT = True # set DLT to True
-                                choicestim.setText(choice) # update the response stimulus
-                                qstim.draw() # RE-dessiner la question car elle va disparaitre avec flip
-                                choicestim.draw() # dessiner le stimulus réponse
-                                disp.flip() # update the monitor
-                                core.wait(loadTime) # add a little lag to avoid little freez and/or bug
-                            """
-                            
+                            # --------------------- #
+                            # CHECK CHOICE VALIDITY #
+                            # --------------------- # 
                             if choice in code_choice.keys(): # if the choice is compatible the dictionnary key
                                 pair.choice(code_choice[choice]) # Actualize the properties of the pair word
                             else: # if the kes is not compatible
                                 DLT = False # We have to continue the while loop   
                         pair.setFirstTest() # Change firstTest attribute of the pair True
                         
-
 # ----------------------------------------- #
 # ENDING : DISPLAY A THANK YOU MESSAGE      #
 # SAVE THE NUMBER OF TURNS FOR THE RESULTS  #
