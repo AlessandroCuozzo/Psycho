@@ -150,7 +150,7 @@ qpos2 = (int(DISPSIZE[0]*-0.02),int(DISPSIZE[1]*-0.02)) # position de la questio
 qpos3 = (int(DISPSIZE[0]*-0.2),int(DISPSIZE[1]*-0.05)) # position de la question
 qpos4 = (int(DISPSIZE[0]*-0.03),int(DISPSIZE[1]*-0.015)) # position de la question
 qpos5 = (int(DISPSIZE[0]*0.05),int(DISPSIZE[1]*-0.15)) # position de la question
-qpos6 = (int(DISPSIZE[0]*-0.03),int(DISPSIZE[1]*0)) # position de la question
+qpos6 = (int(DISPSIZE[0]*-0.03),int(DISPSIZE[1]*0.02)) # position de la question
 #qpos7 = (int(DISPSIZE[0]*0.05),int(DISPSIZE[1]*-0.15)) # position de la question
 
 userResponse('', False, qpos, size, disp, 'images/img1.gif', False) # call the userResponse -> double while loop to save the user traped response
@@ -347,7 +347,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                         image = 'images/img18.gif' # Bravo image
                         qstim = ImageStim(disp, image=image) # stimulus image
                         qstim2 = TextStim(disp, text=pair.word+space+pair.translate, pos=qpos6, height=size, color=color) # stimulus texte
-                        qstim3 = TextStim(disp, text='', pos=qpos7, height=size, color=color2) # stimulus texte
+                        qstim3 = TextStim(disp, text='', pos=qpos, height=size, color=color2) # stimulus texte
                         #check += u'Bravo ! Vous avez écrit correctement le bon mot.' # Add Bravo to check
                         #qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
                         qstim.draw() # dessiner la question (image)
