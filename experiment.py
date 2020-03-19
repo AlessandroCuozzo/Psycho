@@ -30,7 +30,7 @@ from datetime import datetime
 # Function that will be called every time the user needs to press a key to pass to the next display #
 # Double while loop                                                                                 #
 # ------------------------------------------------------------------------------------------------- #
-def userResponse(response, done, qpos, size, disp, image):
+def userResponse(response, done, qpos, size, disp, image, multi):
     """
     function called when the user will choose to drop, learn or test again a word pair -> only if the user response translation is correct
     - **Input**:
@@ -40,6 +40,7 @@ def userResponse(response, done, qpos, size, disp, image):
         :size: text size for user response
         :disp: the psychopy display screen
         :image: the stimulus image
+        :multi: multiple display ? boolean (True or False)
     """
     
     # --------------------------------------- #
@@ -50,8 +51,11 @@ def userResponse(response, done, qpos, size, disp, image):
         respstim = TextStim(disp, text='', pos=qpos, height=size) # stimulus texte  
         qstim = ImageStim(disp, image=image)
         qstim.draw() # dessiner la question
+        if multi==True:
+            qstim2.draw()
+            qstim3.draw()
         disp.flip() # passer au screen au suivant -> on met la question par-dessus
-        core.wait(0.01) # delay of 10 seconds before passing to the learning phase
+        core.wait(loadTime) # delay of 10 seconds before passing to the learning phase
         done = False
     
         # ----------------------------------- #
@@ -66,7 +70,7 @@ def userResponse(response, done, qpos, size, disp, image):
             qstim.draw() # réafficher la question stimulus
             respstim.draw() # réafficher la réponse au stimulus
             disp.flip() # update the monitor
-            core.wait(0.01) # add a little lag to avoid little freez and/or bug
+            core.wait(loadTime) # add a little lag to avoid little freez and/or bug
 
 
 # --------------------------------------------------------------------------- #
@@ -108,9 +112,16 @@ def tapeAnswer(response, done, realTest):
             qstim2.draw() # réafficher la question stimuls (texte)
         respstim.draw() # réafficher la réponse au stimulus
         disp.flip() # update the monitor
-        core.wait(0.01) # add a little lag to avoid little freez and/or bug
+        core.wait(loadTime) # add a little lag to avoid little freez and/or bug
 
     return response.capitalize(), done # 1ère lettre en majuscule
+
+"""    
+##############################################################################################################################
+##############################################################################################################################
+##############################################################################################################################
+##############################################################################################################################
+""" 
 
 ##################
 ##################
@@ -118,20 +129,28 @@ def tapeAnswer(response, done, realTest):
 ##################
 ##################
             
-# ------------------------- #
-# WELCOME - visual settings #
-# ------------------------- # 
+
+
+# ----------------------------------- #
+# WELCOME - Initial & Visual settings #
+# ----------------------------------- # 
+feedback = True # can be set to True or False
+firstLetter = True # can be set to True or False
 disp = Window (size=DISPSIZE, units='pix', fullscr=True) # créer une fenêtre pour montrer des choses à l'écran => unité est en Pixel
 #size = 24 # text size # 36
 size = 36 # text size # 36
 color = 'darkblue' # text color
+color2 = 'crimson' # text color
+color3 = 'green' # text color
 space = '\t\t\t\t' # space between the word and its translation when learning
-learningTime = 1 # time to given to memorize one pair word
+learnTime = 1 # time to given to memorize one pair word
 loadTime = 0.01 # time for spychopy displaying
 qpos = (0,int(DISPSIZE[1]*-0.2)) # position de la question
-qpos2 = (int(DISPSIZE[1]*-0.05),0) # position de la question
-qpos3 = (int(DISPSIZE[1]*-0.4),int(DISPSIZE[1]*-0.05)) # position de la question
-userResponse('', False, qpos, size, disp, 'images/img1.gif') # call the userResponse -> double while loop to save the user traped response
+qpos2 = (int(DISPSIZE[0]*-0.02),int(DISPSIZE[1]*-0.02)) # position de la question
+qpos3 = (int(DISPSIZE[0]*-0.2),int(DISPSIZE[1]*-0.05)) # position de la question
+qpos4 = (int(DISPSIZE[0]*-0.03),int(DISPSIZE[1]*-0.015)) # position de la question
+qpos5 = (int(DISPSIZE[0]*0.05),int(DISPSIZE[1]*-0.15)) # position de la question
+userResponse('', False, qpos, size, disp, 'images/img1.gif', False) # call the userResponse -> double while loop to save the user traped response
 
 # ----------------------------------- #
 # SETTING FOR THE PRE-TEST            #
@@ -152,9 +171,9 @@ while response != pretest: # while the answer is not correct
     # DISPLAY A MESSAGE TO THE USER ACCORDING TO THE ANSWER   #
     # ------------------------------------------------------- #
     if response==pretest: # if the answer is correct 
-        userResponse('', False, qpos, size, disp, 'images/img3.gif') # call the userResponse -> double while loop to save the user traped response
+        userResponse('', False, qpos, size, disp, 'images/img3.gif', False) # call the userResponse -> double while loop to save the user traped response
     else: # if the answer is NOT correct 
-        userResponse('', False, qpos, size, disp, 'images/img4.gif') # call the userResponse -> double while loop to save the user traped response
+        userResponse('', False, qpos, size, disp, 'images/img4.gif', False) # call the userResponse -> double while loop to save the user traped response
     
         
 """    
@@ -179,13 +198,11 @@ CORRECT_SET = set() # empty set in which we will add every string word when corr
 for pair in dico: # pour chaque pair de mots présente dans le dictionnaire du fichier 'constants'
     LISTE.append(Pair(pair,dico[pair])) # pair is the dico key (french word) ; dico[pair] is the value of the key (corresponding translated word)
 shuffle(LISTE) # mélange la liste de mots -> ordre au hasard
-feedback = True # can be set to True or False
-firstLetter = True # can be set to True or False
 
 # -------------- #
 # LEARNING PHASE #
 # -------------- #
-userResponse('', False, qpos, size, disp, 'images/img5.gif') # call the userResponse -> double while loop to save the user traped response
+userResponse('', False, qpos, size, disp, 'images/img5.gif', False) # call the userResponse -> double while loop to save the user traped response
 for pair in LISTE: # pour chaque pair de mot
     learn = pair.word+space+pair.translate # le mot en français + 3 tabs (espacements + la traduction)
     qstim = ImageStim(disp, image='images/img10.gif')
@@ -193,7 +210,7 @@ for pair in LISTE: # pour chaque pair de mot
     qstim.draw() # dessiner la pair de mots (image)
     qstim2.draw() # dessiner la pair de mots (texte)
     disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
-    core.wait(learningTime) # delay of 10 seconds before passing to the next pair
+    core.wait(learnTime) # delay of 10 seconds before passing to the next pair
 
 
 """    
@@ -252,7 +269,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 qstim.draw() # dessiner la pair de mots (image)
                 qstim2.draw() # dessiner la pair de mots (texte)
                 disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
-                core.wait(learningTime) # delay of 10 seconds before passing to the next pair
+                core.wait(learnTime) # delay of 10 seconds before passing to the next pair
                 pair.addLearn(i) # Fill the pair object allUserResponses attribute with **LEARN** for the actual turn
                 pair.setLearn() # # actualize the learn property of the pair object
             
@@ -266,7 +283,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 if firstLetter==True: # Do we give the student the first letter of the translation ?
                     response += pair.translate[0] # le mot en français => avec la 1ère lettre du mot comme indice
                 print(response)
-                qstim = ImageStim(disp, image='images/img11') # stimulus texte
+                qstim = ImageStim(disp, image='images/img11.gif') # stimulus image
                 qstim2 = TextStim(disp, text=pair.word, pos=qpos3, height=size, color=color) # stimulus texte
                 respstim = TextStim(disp, text=response, pos=qpos, height=size, color=color) # boite réponse (to be completed by the user)
                 respstim.setText(response) # actualiser la user response => 1ère lettre en majuscule
@@ -285,6 +302,8 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 # SHOW THE RESPONSE AND CORRECT ANSWER TO THE USER       #
                 # ------------------------------------------------------ #
                 pair.addResponse(response,i) # add the user response in the pair object (no matter if the response is correct or wrong)
+                
+                """
                 if pair.firstTest == False: # If it is the very first time the user gives the correct answer
                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
                         check = 'traduction = '+pair.translate+u'\n votre réponse = '+pair.user_response+'\n\n' # créer une question
@@ -295,6 +314,8 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                         #core.wait(2) # delay of 10 seconds before passing to the learning phase
                     else: # In case this is not the first test
                         check = '' # we set an empty string for check -> we need it to display both the user answer and the Bravo/Wrong phrase in the same screen
+                """
+                
                 # ------------------------------------------------------------------ #
                 # RESPONSE CHECK - WHAT ACTION THE SUBJECT WILL CHOOSE ?             #
                 # CHECK IF THE USER RESPONSE IS CORRECT OR WRONG                     #
@@ -304,20 +325,34 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 if pair.checkAnswer()==False: # if the answer is NOT correct 
                     pair.addFail() # fail = fail + 1 | => Will also set the word pair for a new test | => increases the threshold of maximum testing
                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
-                        check += u'Vous n\'avez malheureusement pas écrit le bon mot.' # Add Wrong to check
-                        qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
-                        qstim.draw() # dessiner la question
+                        image = 'images/img17.gif' # Ooups image
+                        qstim = ImageStim(disp, image=image) # stimulus image
+                        qstim2 = TextStim(disp, text=pair.word+space+pair.translate, pos=qpos4, height=size, color=color) # stimulus texte
+                        qstim3 = TextStim(disp, text=pair.user_response, pos=qpos5, height=size, color=color2) # stimulus texte
+                        #check += u'Vous n\'avez malheureusement pas écrit le bon mot.' # Add Wrong to check
+                        #qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
+                        qstim.draw() # dessiner la question (image)
+                        qstim2.draw() # dessiner la question (pair de mot)
+                        qstim3.draw() # dessiner la question (user response)
                         disp.flip() # passer au screen au suivant -> on met la question par-dessus
-                        core.wait(5) # delay of 10 seconds before passing to the learning phase
+                        userResponse('', False, qpos, size, disp, image, True) # call the userResponse -> double while loop to save the user traped response
+                        #core.wait(5) # delay of 10 seconds before passing to the learning phase
                     
                 else: # if the answer is correct 
                     pair.addSuccess() # success = success + 1    
                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
-                        check += u'Bravo ! Vous avez écrit correctement le bon mot.' # Add Bravo to check
-                        qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
-                        qstim.draw() # dessiner la question
+                        image = 'images/img18.gif' # Bravo image
+                        qstim = ImageStim(disp, image=image) # stimulus image
+                        qstim2 = TextStim(disp, text=pair.word+space+pair.translate, pos=qpos4, height=size, color=color) # stimulus texte
+                        qstim3 = TextStim(disp, text=pair.user_response, pos=qpos5, height=size, color=color2) # stimulus texte
+                        #check += u'Bravo ! Vous avez écrit correctement le bon mot.' # Add Bravo to check
+                        #qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
+                        qstim.draw() # dessiner la question (image)
+                        qstim2.draw() # dessiner la question (pair de mot)
+                        qstim3.draw() # dessiner la question (user response)
                         disp.flip() # passer au screen au suivant -> on met la question par-dessus
-                        core.wait(5) # delay of 10 seconds before passing to the learning phase
+                        userResponse('', False, qpos, size, disp, image, True) # call the userResponse -> double while loop to save the user traped response
+                        #core.wait(5) # delay of 10 seconds before passing to the learning phase
                     
                     
                     # --------------------------------------------------------------- #
@@ -373,7 +408,7 @@ I = i # we save the number of turns the while loop did
 qstim = ImageStim(disp, image='images/img8.gif')
 qstim.draw() # dessiner la question
 disp.flip() # passer au screen au suivant -> on met la question par-dessus
-core.wait(laerningTime) # delay of 10 seconds before passing to the learning phase       
+core.wait(learnTime) # delay of 10 seconds before passing to the learning phase       
 disp.close() # close the display 
             
 """    
