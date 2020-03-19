@@ -149,9 +149,9 @@ class Pair:
             :user_response: the answer attempted by the user
             :turn: in which turn of the main loop are we
         """
-        if user_choice == 'test':
+        if user_choice=='test':
             self.newTest = True
-        elif user_choice =='drop':
+        elif user_choice=='drop':
             self.drop = True
         else: # user_choice == 'learn'
             self.newLearn = True

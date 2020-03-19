@@ -315,6 +315,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
             # LEARNING THE PAIR WORD #
             # ---------------------- #
             if pair.newLearn==True and pair.learn<pair.maxLearn: # the user chose to learn this pair after its first correct answer AND if he has not reached the learning threshold yet
+                learn = pair.word+space+pair.translate # le mot en français + 3 tabs (espacements + la traduction)
                 qstim = ImageStim(disp, image='images/Learn.gif')
                 qstim2 = TextStim(disp, text=learn, pos=qpos2, height=size, color=color) # stimulus texte
                 qstim.draw() # dessiner la pair de mots (image)
@@ -341,7 +342,6 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 respstim.draw() # Draw the translation response
                 disp.flip() # passer au screen au suivant -> on met la pair de mots par-dessus
                 core.wait(loadTime) # delay of 10 seconds before passing to the next pair
-                DLT = False # Drop / Learn / Test
                 pair.setTest() # actualize the test property of the pair object
                 response, done = tapeAnswer(response, False, True) # While loop to taping the entire answer
                           
@@ -358,7 +358,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     pair.addFail() # fail = fail + 1 | => Will also set the word pair for a new test | => increases the threshold of maximum testing
                     if feedback==True or pair.firstTest==False or (feedback==True and pair.firstTest==True): # Does the subject benefits of a feed back after an answer ?
                         if pair.firstTest==False: # the first test always benefits of the full feed-back
-                            image = 'images/Oups.gif' # Ooups image
+                            image = 'images/Oups.gif' # Ooups image - full feedback
                             text = pair.word+space+pair.translate # word pair
                             text2 = pair.user_response # answer written by the user
                         else: # Only message saying 'Ouups
@@ -386,7 +386,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     pair.addSuccess() # success = success + 1    
                     if feedback==True or pair.firstTest==False or (feedback==True and pair.firstTest==True): # Does the subject benefits of a feed back after an answer ?
                         if pair.firstTest==False: # the first test always benefits of the full feed-back
-                            image = 'images/Bravo.gif' # Bravo image
+                            image = 'images/Bravo.gif' # Bravo image - full feedback
                             text = pair.word+space+pair.translate # word pair
                         else: # Only message saying 'Bravo'
                              image = 'images/BravoEmpty.gif' # Ooups image
@@ -409,8 +409,8 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     if pair.firstTest == False: # If it is the very first time the user gives the correct answer
                         image = 'images/Choix.gif' # Bravo + choice image
                         choice = '' # the chocie selected by the user - On commence avec une chaîne vide
+                        DLT = False # Drop / Learn / Test
                         while choice not in code_choice.keys(): # while the choice is not one understood by thze program (other than 1,2 or 3)
-                            DLT = '' # the chocie selected by the user - On commence avec une chaîne vide
                             choicestim = TextStim(disp, text='', height=size) # stimulus texte  
                             qstim = ImageStim(disp, image=image) # stimulus image
                             qstim2 = TextStim(disp, text=pair.word+space+pair.translate, pos=qpos7, height=size, color=color3) # stimulus texte
@@ -437,8 +437,8 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
 # THEN CLOSE THE DISPLAY                    #
 # ----------------------------------------- # 
 I = i # we save the number of turns the while loop did   
-qstim = ImageStim(disp, image='images/Merci.gif')
-qstim.draw() # dessiner la question
+qstim = ImageStim(disp, image='images/Merci.gif') # thank you image
+qstim.draw() # afficher le message image
 disp.flip() # passer au screen au suivant -> on met la question par-dessus
 core.wait(learnTime) # delay of 10 seconds before passing to the learning phase       
 disp.close() # close the display 
