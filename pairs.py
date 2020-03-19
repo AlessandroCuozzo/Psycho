@@ -85,7 +85,7 @@ class Pair:
             self.attempt += 1 # the user performs a new attempt
         else: # if the user did not give a correct answer yet
             self.firstAttempt += 1 # actualize the first attempt counter
-        self.user_response = user_response.lower().strip() # on set tous les caractères en minuscule ET on enlève les éventuels espaces au début et à la fin du mot (pour réduire les éventuels biais dus aux erreurs de frappe)
+        self.user_response = user_response.capitalize().strip() # on set tous les caractères en minuscule ET on enlève les éventuels espaces au début et à la fin du mot (pour réduire les éventuels biais dus aux erreurs de frappe)
         #self.user_responseL = len(self.user_response) 
         self.allUserResponses[turn] = "**TEST** "+self.user_response # save the response in the responses dictionnary to keep track
         
