@@ -363,32 +363,15 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 pair.setTest() # actualize the test property of the pair object
                 response, done = tapeAnswer(response, False, True) # While loop to taping the entire answer
                  
-                # ------------------------------------------------------ #
-                # ADD THE USER RESPONSE IN THE PAIR OBJECT               #
-                # CHECK IF WE ARE STILL IN THE FIRST TEST FOR THIS PAIR  #
-                # SHOW THE RESPONSE AND CORRECT ANSWER TO THE USER       #
-                # ------------------------------------------------------ #
-                pair.addResponse(response,i) # add the user response in the pair object (no matter if the response is correct or wrong)
-                
-                """
-                if pair.firstTest == False: # If it is the very first time the user gives the correct answer
-                    if feedback==True: # Does the subject benefits of a feed back after an answer ?
-                        check = 'traduction = '+pair.translate+u'\n votre réponse = '+pair.user_response+'\n\n' # créer une question
-                        #qpos= (0, int(DISPSIZE[1]*0.2)) # position de la question
-                        #qstim = TextStim(disp, text=check, pos=qpos, height=24) # stimulus texte
-                        #qstim.draw() # dessiner la question
-                        #disp.flip() # passer au screen au suivant -> on met la question par-dessus
-                        #core.wait(2) # delay of 10 seconds before passing to the learning phase
-                    else: # In case this is not the first test
-                        check = '' # we set an empty string for check -> we need it to display both the user answer and the Bravo/Wrong phrase in the same screen
-                """
                 
                 # ------------------------------------------------------------------ #
+                # ADD THE USER RESPONSE IN THE PAIR OBJECT                           #
                 # RESPONSE CHECK - WHAT ACTION THE SUBJECT WILL CHOOSE ?             #
                 # CHECK IF THE USER RESPONSE IS CORRECT OR WRONG                     #
                 # CHECK IF WE DECIDED TO GIVE A FEEDBACK OR NOT                      #
                 # ADD SUCCESS OR FAILURE IN THE WORD PAIR OBJECT ACCORDING TO CHECK  #
                 # ------------------------------------------------------------------ #
+                pair.addResponse(response,i) # add the user response in the pair object (no matter if the response is correct or wrong)
                 if pair.checkAnswer()==False: # if the answer is NOT correct 
                     pair.addFail() # fail = fail + 1 | => Will also set the word pair for a new test | => increases the threshold of maximum testing
                     if feedback==True: # Does the subject benefits of a feed back after an answer ?
@@ -396,8 +379,6 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                         qstim = ImageStim(disp, image=image) # stimulus image
                         qstim2 = TextStim(disp, text=pair.word+space+pair.translate, pos=qpos4, height=size, color=color) # stimulus texte
                         qstim3 = TextStim(disp, text=pair.user_response, pos=qpos5, height=size, color=color2) # stimulus texte
-                        #check += u'Vous n\'avez malheureusement pas écrit le bon mot.' # Add Wrong to check
-                        #qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
                         qstim.draw() # dessiner la question (image)
                         qstim2.draw() # dessiner la question (pair de mot)
                         qstim3.draw() # dessiner la question (user response)
@@ -412,8 +393,6 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                         qstim = ImageStim(disp, image=image) # stimulus image
                         qstim2 = TextStim(disp, text=pair.word+space+pair.translate, pos=qpos6, height=size, color=color3) # stimulus texte
                         qstim3 = TextStim(disp, text='', pos=qpos, height=size, color=color2) # stimulus texte
-                        #check += u'Bravo ! Vous avez écrit correctement le bon mot.' # Add Bravo to check
-                        #qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
                         qstim.draw() # dessiner la question (image)
                         qstim2.draw() # dessiner la question (pair de mot)
                         qstim3.draw() # dessiner la question (user response)
@@ -436,8 +415,6 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                             qstim = ImageStim(disp, image=image) # stimulus image
                             qstim2 = TextStim(disp, text=pair.word+space+pair.translate, pos=qpos7, height=size, color=color3) # stimulus texte
                             respstim = TextStim(disp, text='', pos=qpos8, height=size, color=color) # stimulus texte
-                            #check += u'Bravo ! Vous avez écrit correctement le bon mot.' # Add Bravo to check
-                            #qstim = TextStim(disp, text=check, pos=qpos, height=size) # stimulus texte
                             qstim.draw() # dessiner la question (image)
                             qstim2.draw() # dessiner la question (pair de mot)
                             respstim.draw() # dessiner la question (user response)
