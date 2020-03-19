@@ -1,9 +1,0 @@
-word	translation	response1	response2	response3	response4	response5	response6	1st_attempt	1st_success	1st_failure	attempt	success	failure
-Fagyi	Glace	**TEST** Gaaa	**TEST** Ga	**TEST** G3	**TEST** Glace	**DROPPED**	**DROPPED**	4	1	3	0	0	0
-Bors	Poivre	**TEST** Pa	**TEST** Pa	**TEST** Poivre	**TEST** Poivre	**TEST** Pe	**FINISHED**	3	1	2	2	1	1
-Sajt	Fromage	**TEST** Faaa	**TEST** Fa	**TEST** Fromage	**LEARN**	**LEARN**	**FINISHED**	3	1	2	0	0	0
-Csirke	Poulet	**TEST** Paaa	**TEST** Pa	**TEST** Poulet	**DROPPED**	**DROPPED**	**DROPPED**	3	1	2	0	0	0
-Gc
-56
-G
-Hjc

@@ -80,7 +80,7 @@ def whoAmI(response, done, qpos, image):
 # ------------------------------------------------------------------------------------------------- #
 def userResponse(response, done, qpos, image, multi):
     """
-    function called when the user will choose to drop, learn or test again a word pair -> only if the user response translation is correct
+    Function that will be called every time the user needs to press a key to pass to the next display
     - **Input**:
         :response: the user resonse (empty string at beginning)
         :done: boolean (True / False) -> False at beginning
@@ -118,7 +118,6 @@ def userResponse(response, done, qpos, image, multi):
             respstim.draw() # réafficher la réponse au stimulus
             disp.flip() # update the monitor
             core.wait(loadTime) # add a little lag to avoid little freez and/or bug
-
 
 # --------------------------------------------------------------------------- #
 # Function that will be called every time the user is still taping his answer #
@@ -188,7 +187,7 @@ color = 'darkblue' # text color
 color2 = 'crimson' # text color
 color3 = 'green' # text color
 space = '\t\t\t\t' # space between the word and its translation when learning
-learnTime = 5 # time to given to memorize one pair word
+learnTime = 5 # time given to memorize one pair word
 loadTime = 0.01 # time for spychopy displaying
 qpos = (0,int(DISPSIZE[1]*-0.2)) # position de la question
 qpos2 = (int(DISPSIZE[0]*-0.02),int(DISPSIZE[1]*-0.02)) # position de la question
@@ -199,9 +198,10 @@ qpos6 = (int(DISPSIZE[0]*-0.03),int(DISPSIZE[1]*0.02)) # position de la question
 qpos7 = (int(DISPSIZE[0]*-0.02),int(DISPSIZE[1]*0.25)) # position de la question
 qpos8 = (int(DISPSIZE[0]*0.3),int(DISPSIZE[1]*-0.35)) # position de la question
 
-# ---------------- #
-# WHO AM I - HELLO #
-# ---------------- # 
+# ------------------------------------------ #
+# WHO AM I - HELLO                           #
+# Tape ID, age, gender and degre of the user #
+# ------------------------------------------ # 
 userResponse('', False, qpos, 'images/Bonjour.gif', 1) # call the userResponse -> double while loop to save the user traped response
 ID = whoAmI('', False, qpos, 'images/ID.gif') # call the whoAmI -> double while loop to save the user traped response
 image = 'images/Age.gif'
@@ -226,7 +226,7 @@ while response != pretest: # while the answer is not correct
     qstim = ImageStim(disp, image='images/TradVonat.gif')
     qstim.draw() # dessiner la question
     disp.flip() # passer au screen au suivant -> on met la question par-dessus
-    core.wait(0.01) # delay of 10 seconds before passing to the learning phase
+    core.wait(loadTime) # delay of 10 seconds before passing to the learning phase
     response, done = tapeAnswer(response, False, False) # While loop to taping the entire answer
 
     # ------------------------------------------------------- #
@@ -297,6 +297,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
     i += 1 # number of turns of the loop => i will be reused to know at which turn of the loop we are for each response (to save in the results)
     
     # ------------------------------------------------------------------------- #
+    # SHUFFLE THE PAIRS ORDER                                                   #
     # SECOND MAIN LOOP - FOR EACH WORD                                          #
     # Check if the user previously decided to drop, learn or test the word pair #
     # ------------------------------------------------------------------------- #
@@ -304,7 +305,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
     for pair in LISTE: # pour chaque pair de mot
         if pair.drop==True or (pair.newTest==True and pair.test==pair.maxTest) or (pair.newLearn==True and pair.learn==pair.maxLearn): # if we are done with the present pair
             CORRECT_SET.add(pair.word) # we add it in the set containing all pairs we won't have to deal with again
-            if pair.drop == True: # if the user decided to drop the word pair during the previous loop turn
+            if pair.drop==True: # if the user decided to drop the word pair during the previous loop turn
                 pair.addDrop(i) # Fill the pair object allUserResponses attribute with **DROPPED** for the actual turn -> will actually do the same for each remaining turns
             else: # if the user is done with this pair word, but it did not drop it -> he 'finished'
                 pair.addFinish(i) # Fill the pair object allUserResponses attribute with **FINISHED** for the actual turn -> will actually do the same for each remaining turns
@@ -314,8 +315,6 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
             # LEARNING THE PAIR WORD #
             # ---------------------- #
             if pair.newLearn==True and pair.learn<pair.maxLearn: # the user chose to learn this pair after its first correct answer AND if he has not reached the learning threshold yet
-                learn = pair.word+space+pair.translate # le mot en français + 3 tabs (espacements + la traduction)
-                learn = pair.word+space+pair.translate # le mot en français + 3 tabs (espacements + la traduction)
                 qstim = ImageStim(disp, image='images/Learn.gif')
                 qstim2 = TextStim(disp, text=learn, pos=qpos2, height=size, color=color) # stimulus texte
                 qstim.draw() # dessiner la pair de mots (image)
@@ -348,10 +347,11 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                           
                 # ------------------------------------------------------------------ #
                 # ADD THE USER RESPONSE IN THE PAIR OBJECT                           #
-                # RESPONSE CHECK - WHAT ACTION THE SUBJECT WILL CHOOSE ?             #
-                # CHECK IF THE USER RESPONSE IS CORRECT OR WRONG                     #
-                # CHECK IF WE DECIDED TO GIVE A FEEDBACK OR NOT                      #
-                # ADD SUCCESS OR FAILURE IN THE WORD PAIR OBJECT ACCORDING TO CHECK  #
+                # RESPONSE CHECK - RESPONSE IS WRONG                                 #
+                # ADD FAILURE IN THE WORD PAIR OBJECT                                #
+                # CHECK IF WE DECIDED TO GIVE A FEEDBACK AFTER THE FIRST TEST OR NOT #
+                # CHECK IF FIRST TEST OR NOT                                         #
+                # DISPLAY FEEDBACK                                                   #
                 # ------------------------------------------------------------------ #
                 pair.addResponse(response,i) # add the user response in the pair object (no matter if the response is correct or wrong)
                 if pair.checkAnswer()==False: # if the answer is NOT correct 
@@ -375,7 +375,13 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                         userResponse('', False, qpos, image, 3) # call the userResponse -> double while loop to save the user traped response
                         core.wait(loadTime) # let psychopy breath...
                     
-                    
+                # ------------------------------------------------------------------ #
+                # RESPONSE CHECK - RESPONSE IS CORRECT                               #
+                # ADD SUCCESS IN THE WORD PAIR OBJECT                                #
+                # CHECK IF WE DECIDED TO GIVE A FEEDBACK AFTER THE FIRST TEST OR NOT #
+                # CHECK IF FIRST TEST OR NOT                                         #
+                # DISPLAY FEEDBACK                                                   #
+                # ------------------------------------------------------------------ #
                 else: # if the answer is correct 
                     pair.addSuccess() # success = success + 1    
                     if feedback==True or pair.firstTest==False or (feedback==True and pair.firstTest==True): # Does the subject benefits of a feed back after an answer ?
@@ -397,7 +403,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     
                     # --------------------------------------------------------------- #
                     # CASE IF IT IS THE FIRST TIME THE USER GIVES THE CORRECT ANSWER  #
-                    # FOURTH MAIN LOOP ; WHILE THE CHOICE CANNOT BE INTERPRETED       #
+                    # THIRD MAIN LOOP ; WHILE THE CHOICE CANNOT BE INTERPRETED        #
                     # let the user choose what he wants do to : Test / Learn / Drop   #
                     # --------------------------------------------------------------- # 
                     if pair.firstTest == False: # If it is the very first time the user gives the correct answer
@@ -413,7 +419,6 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                             qstim2.draw() # dessiner la question (pair de mot)
                             respstim.draw() # dessiner la question (user response)
                             disp.flip() # passer au screen au suivant -> on met la question par-dessus
-                            #userResponse('', False, qpos, size, disp, image, 2) # call the userResponse -> double while loop to save the user traped response
                             core.wait(loadTime) # let psychopy breath...        
                             choice, DLT = tapeAnswer(choice, DLT, True) # tapeAnswer function
                             
