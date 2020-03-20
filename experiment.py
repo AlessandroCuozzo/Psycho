@@ -8,7 +8,7 @@ EXPERIMENTAL PSYCHOLOGY - RETRIEVAL PRACTICE
 ############################################
 Created on Tue Aug 13 15:42:22 2019
 
-@author: p17620
+@author: Cuozzo, Tardif (p42299, p17620) 
 """
 #import time # import the time modules 
 from constants import DISPSIZE, dico, code_choice, code_choice_reverse, pretest # import the pre-determined constants
@@ -130,7 +130,7 @@ def tapeAnswer(response, done, realTest):
     - **Input**:
         :response: the user resonse (empty string at beginning)
         :done: boolean (True / False) -> False at beginning
-        :test: boolean (True or False)
+        :realTest: boolean (True or False)
         
     - **outpu**:
         :response: the user response
@@ -468,10 +468,3 @@ with open('retrieval_practice_results_'+ID+'_'+AGE+'_'+SEXE+'_'+DEGRE+'_'+str(da
     f.write(SEXE+'\n') # add the gender of the user
     f.write(DEGRE+'\n') # add the scholar degree of the user
  
- 
-#################
-#################
-#  FINAL TEST   #
-#################
-#################
-        

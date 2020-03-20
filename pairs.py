@@ -8,7 +8,7 @@
 ############################################
 Created on Mon Aug 26 22:01:53 2019
 
-@author: cuozzo
+@author: Cuozzo, Tardif (p42299, p17620)
 """
 
 class Pair:

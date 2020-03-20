@@ -8,7 +8,7 @@
 #############################################
 Created on Tue Aug 13 15:39:01 2019
 
-@author: p17620
+@author: Cuozzo, Tardif (p42299, p17620)
 """
 
 DISPSIZE = (1366, 768) # (1440, 900) -> the maximum screen size allowed depends on the computer
