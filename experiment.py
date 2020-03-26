@@ -37,6 +37,9 @@ def whoAmI(response, done, qpos, image):
         :done: boolean (True / False) -> False at beginning
         :qpos: text position for user response
         :image: the stimulus image
+        
+    - **outpu**:
+        :response: the user response
     """
     
     # --------------------------------------- #
@@ -144,13 +147,13 @@ def tapeAnswer(response, done, realTest):
     while not done: # loop until done == True
         resplist = waitKeys(maxWait=float('inf'), keyList=None, timeStamped=True)
         key, presstime = resplist[0] # use only the first in the returned list of keypresses -> resplist[0] is the first element in the resplist list   
-        if len(key) == 1: # Check si la longeur de la réponse (len) = 1
+        if len(key)==1: # Check si la longeur de la réponse (len) = 1
             response += key #Ajouter la lettre tapée à la réponse => on ne tient pas compte des touches pour les majuscules ni de la touche escape
-        elif key == 'space': # Check if key is the space bar
+        elif key=='space': # Check if key is the space bar
             response += ' ' # ajoute un espace
-        elif key == 'backspace' and len(response) > 0: # Check if the key's name was backspace AND si la réponse a au moins une lettre
+        elif key=='backspace' and len(response) > 0: # Check if the key's name was backspace AND si la réponse a au moins une lettre
             response = response[0:-1] #remove last character of the response
-        if key == 'return': # if the key was non of the above, check si c'est enter
+        if key=='return': # if the key was non of the above, check si c'est enter
             done = True # set done to True
         respstim.setText(response.capitalize()) # actualiser la user response => 1ère lettre en majuscule
         qstim.draw() # réafficher la question stimulus (image)
@@ -259,7 +262,7 @@ while response != pretest: # while the answer is not correct
 LISTE = [] # empty list which will contain all the pair objects
 CORRECT_SET = set() # empty set in which we will add every string word when correctly translated by the user 
 for pair in dico: # pour chaque pair de mots présente dans le dictionnaire du fichier 'constants'
-    LISTE.append(Pair(pair,dico[pair])) # pair is the dico key (french word) ; dico[pair] is the value of the key (corresponding translated word)
+    LISTE.append(Pair(pair,dico[pair])) # pair is the dico key (word) ; dico[pair] is the value of the key (corresponding translated word)
 shuffle(LISTE) # mélange la liste de mots -> ordre au hasard
 
 # -------------- #
@@ -292,7 +295,7 @@ for pair in LISTE: # pour chaque pair de mot
 # ----------------------------------------------------------------------------------- #
 # FIRST MAIN LOOP - THIS STEP IS REPEATED UNTIL THE USER IS DONE WITH EVERY WORD PAIR #
 # ----------------------------------------------------------------------------------- # 
-i = 0
+i = 0 # compteur pour le nombre de tours
 while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to every pair at least once 
     i += 1 # number of turns of the loop => i will be reused to know at which turn of the loop we are for each response (to save in the results)
     
@@ -309,7 +312,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                 pair.addDrop(i) # Fill the pair object allUserResponses attribute with **DROPPED** for the actual turn -> will actually do the same for each remaining turns
             else: # if the user is done with this pair word, but it did not drop it -> he 'finished'
                 pair.addFinish(i) # Fill the pair object allUserResponses attribute with **FINISHED** for the actual turn -> will actually do the same for each remaining turns
-        else: # if the user did NOT decide to drop the word pair during the previous loop turn
+        else: # if the user did NOT decide to drop the word pair during the previous loop turn, or has not finished to learn / test the word pair yet
             
             # ---------------------- #
             # LEARNING THE PAIR WORD #
@@ -330,7 +333,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
             # CHECK IF WE DECIDED TO GIVE THE TRANSLATION FIRST LETTER OR NOT #
             # --------------------------------------------------------------- #
             elif (pair.newLearn==False and pair.newTest==True and pair.test<pair.maxTest) or i==1: # If the user chose to test agin the pair word after its first correct answer AND if he has not reached the learning threshold yet OR If it is the very first time (first turn of the main while loop)
-                response = ''
+                response = '' # réponse qui contiendra le mot en français
                 if firstLetter==True: # Do we give the student the first letter of the translation ?
                     response += pair.translate[0] # le mot en français => avec la 1ère lettre du mot comme indice
                 qstim = ImageStim(disp, image='images/Test.gif') # stimulus image
@@ -406,7 +409,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                     # THIRD MAIN LOOP ; WHILE THE CHOICE CANNOT BE INTERPRETED        #
                     # let the user choose what he wants do to : Test / Learn / Drop   #
                     # --------------------------------------------------------------- # 
-                    if pair.firstTest == False: # If it is the very first time the user gives the correct answer
+                    if pair.firstTest==False: # If it is the very first time the user gives the correct answer
                         image = 'images/Choix.gif' # Bravo + choice image
                         choice = '' # the chocie selected by the user - On commence avec une chaîne vide
                         DLT = False # Drop / Learn / Test
@@ -420,7 +423,7 @@ while len(CORRECT_SET)<len(LISTE): # Until the user gives the correct answer to 
                             respstim.draw() # dessiner la question (user response)
                             disp.flip() # passer au screen au suivant -> on met la question par-dessus
                             core.wait(loadTime) # let psychopy breath...        
-                            choice, DLT = tapeAnswer(choice, DLT, True) # tapeAnswer function
+                            choice, DLT = tapeAnswer('', DLT, True) # tapeAnswer function
                             
                             # --------------------- #
                             # CHECK CHOICE VALIDITY #
