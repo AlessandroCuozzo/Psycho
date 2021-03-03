@@ -24,6 +24,7 @@ To start the PsychoPy builder, enter the following in your terminal/command prom
 Mac/Linux
 
 source activate psychopy
+conda activate psychopy
 ~/.conda/envs/psychopy-instructions/lib/python2.7/site-packages/psychopy/app/psychopyApp.py -b
 
 Then, when you are done, enter:

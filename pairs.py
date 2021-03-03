@@ -158,14 +158,14 @@ class Pair:
     
     def setTest(self):       
         """
-        set lest = test + 1
+        set test = test + 1
         """       
         if self.firstTest==True: # if we are already testing AFTER the user's choice
             self.test += 1 #  The threshold is maxTest
         
     def setLearn(self):       
         """
-        set Learn = learn + 1
+        set learn = learn + 1
         """       
         self.learn += 1 # The threshold is maxLearn
         

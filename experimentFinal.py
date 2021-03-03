@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 ############################################
@@ -173,7 +173,7 @@ def tapeAnswer(response, done, realTest):
 # Initial & Visual settings #
 # ------------------------- # 
 feedback = True # can be set to True or False
-firstLetter = True # can be set to True or False
+firstLetter = False # can be set to True or False
 disp = Window (size=DISPSIZE, units='pix', fullscr=True) # créer une fenêtre pour montrer des choses à l'écran => unité est en Pixel
 #size = 24 # text size # 36
 size = 36 # text size # 36
@@ -181,33 +181,62 @@ color = 'darkblue' # text color
 color2 = 'crimson' # text color
 color3 = 'green' # text color
 space = '\t\t\t\t' # space between the word and its translation when learning
-learnTime = 5 # time given to memorize one pair word
+learnTime = 10 # time given to memorize one pair word
 loadTime = 0.01 # time for spychopy displaying
-qpos = (0,int(DISPSIZE[1]*-0.2)) # position de la question
-#qpos2 = (int(DISPSIZE[0]*-0.02),int(DISPSIZE[1]*-0.02)) # position de la question
-qpos3 = (int(DISPSIZE[0]*-0.2),int(DISPSIZE[1]*-0.05)) # position de la question
-#qpos4 = (int(DISPSIZE[0]*-0.03),int(DISPSIZE[1]*-0.015)) # position de la question
-#qpos5 = (int(DISPSIZE[0]*0.05),int(DISPSIZE[1]*-0.15)) # position de la question
-#qpos6 = (int(DISPSIZE[0]*-0.03),int(DISPSIZE[1]*0.02)) # position de la question
-#qpos7 = (int(DISPSIZE[0]*-0.02),int(DISPSIZE[1]*0.25)) # position de la question
-#qpos8 = (int(DISPSIZE[0]*0.3),int(DISPSIZE[1]*-0.35)) # position de la question
+X = int(DISPSIZE[0]) # axe des X pour l'écran
+Y = int(DISPSIZE[1]) # axe des Y pour l'écran
+
+
+# Linux
+qpos = (X*0,Y*-0.2) # position de la question
+#qpos2 = (X*-0.02,Y*-0.02) # position de la question
+qpos3 = (X*-0.2,Y*-0.05) # position de la question
+#qpos4 = (X*-0.03,Y*-0.015) # position de la question
+#qpos5 = (X*0.05,Y*-0.15) # position de la question
+#qpos6 = (X*-0.03,Y*0.02) # position de la question
+#qpos7 = (X*-0.02,Y*0.25) # position de la question
+#qpos8 = (X*0.3,Y*-0.35) # position de la question
+#qpos9 = (X*0.3,Y*-0.25) # position de la question
+
+"""
+# Mac
+qpos = (X*0.5,Y*-0.2) # position de la question
+#qpos2 = (X*0.18,Y*-0.02) # position de la question
+qpos3 = (X*0.18,Y*-0.05) # position de la question
+#qpos4 = (X*0.18,Y*-0.015) # position de la question
+#qpos5 = (X*0.25,Y*-0.15) # position de la question
+#qpos6 = (X*0.18,Y*0.02) # position de la question
+#qpos7 = (X*0.18,Y*0.25) # position de la question
+#qpos8 = (X*0.5,Y*-0.35) # position de la question
+#qpos9 = (X*0.5,Y*-0.25) # position de la question
+
+# Windows
+qpos = (X*0.1,Y*-0.2) # position de la question
+#qpos2 = (X*0,Y*-0.02) # position de la question
+qpos3 = (X*-0.1,Y*-0.05) # position de la question
+#qpos4 = (X*0,Y*-0.015) # position de la question
+#qpos5 = (X*0.1,Y*-0.15) # position de la question
+#qpos6 = (X*0,Y*0.02) # position de la question
+#qpos7 = (X*0,Y*0.25) # position de la question
+#qpos8 = (X*0.3,Y*-0.35) # position de la question
+"""
 
 # ------------------------------------------ #
 # WHO AM I - HELLO                           #
 # Tape ID, age, gender and degre of the user #
 # ------------------------------------------ # 
-userResponse('', False, qpos, 'images/Bonjour.gif') # call the userResponse -> double while loop to save the user traped response
-ID = whoAmI('', False, qpos, 'images/ID.gif') # call the whoAmI -> double while loop to save the user traped response
+userResponse('', False, qpos, 'images/Bonjour.gif') # call the userResponse -> double while loop to save the user taped response
+ID = whoAmI('', False, qpos, 'images/ID.gif') # call the whoAmI -> double while loop to save the user taped response
 image = 'images/Age.gif'
-AGE = whoAmI('', False, qpos, image) # call the whoAmI -> double while loop to save the user traped response
+AGE = whoAmI('', False, qpos, image) # call the whoAmI -> double while loop to save the user taped response
 while AGE.isdigit()==False: # only accept decimals | can isdecimal() in python3
-    AGE = whoAmI('', False, qpos, image) # call the whoAmI -> double while loop to save the user traped response
+    AGE = whoAmI('', False, qpos, image) # call the whoAmI -> double while loop to save the user taped response
 image = 'images/Sexe.gif'
-SEXE = whoAmI('', False, qpos, image) # call the whoAmI -> double while loop to save the user traped response
+SEXE = whoAmI('', False, qpos, image) # call the whoAmI -> double while loop to save the user taped response
 while SEXE!='G' and SEXE!='F': # do not accept another answer
-    SEXE = whoAmI('', False, qpos, image) # call the whoAmI -> double while loop to save the user traped response
-DEGRE = whoAmI('', False, qpos, 'images/Degre.gif') # call the whoAmI -> double while loop to save the user traped response
-userResponse('', False, qpos, 'images/Hello.gif') # call the userResponse -> double while loop to save the user traped response
+    SEXE = whoAmI('', False, qpos, image) # call the whoAmI -> double while loop to save the user taped response
+DEGRE = whoAmI('', False, qpos, 'images/Degre.gif') # call the whoAmI -> double while loop to save the user taped response
+userResponse('', False, qpos, 'images/Hello.gif') # call the userResponse -> double while loop to save the user taped response
 
 # ----------------------------------- #
 # SETTING FOR THE PRE-TEST            #
@@ -228,9 +257,9 @@ while response != pretest: # while the answer is not correct
     # DISPLAY A MESSAGE TO THE USER ACCORDING TO THE ANSWER   #
     # ------------------------------------------------------- #
     if response==pretest: # if the answer is correct 
-        userResponse('', False, qpos, 'images/BravoVonat.gif') # call the userResponse -> double while loop to save the user traped response
+        userResponse('', False, qpos, 'images/BravoVonat.gif') # call the userResponse -> double while loop to save the user taped response
     else: # if the answer is NOT correct 
-        userResponse('', False, qpos, 'images/OupsVonat.gif') # call the userResponse -> double while loop to save the user traped response
+        userResponse('', False, qpos, 'images/OupsVonat.gif') # call the userResponse -> double while loop to save the user taped response
 
 """    
 ##############################################################################################################################
@@ -290,7 +319,7 @@ for pair in LISTE: # pour chaque pair de mot
             qstim = ImageStim(disp, image=image) # stimulus image
             qstim.draw() # dessiner la question (image)
             disp.flip() # passer au screen au suivant -> on met la question par-dessus
-            userResponse('', False, qpos, image) # call the userResponse -> double while loop to save the user traped response
+            userResponse('', False, qpos, image) # call the userResponse -> double while loop to save the user taped response
             core.wait(loadTime) # let psychopy breath...
     
     # ------------------------------------------------------------------ #
@@ -306,7 +335,7 @@ for pair in LISTE: # pour chaque pair de mot
             qstim = ImageStim(disp, image=image) # stimulus image
             qstim.draw() # dessiner la question (image)
             disp.flip() # passer au screen au suivant -> on met la question par-dessus
-            userResponse('', False, qpos, image) # call the userResponse -> double while loop to save the user traped response
+            userResponse('', False, qpos, image) # call the userResponse -> double while loop to save the user taped response
             core.wait(loadTime) # let psychopy breath...
             
 # ----------------------------------------- #

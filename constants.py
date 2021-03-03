@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 #############################################
@@ -11,10 +11,57 @@ Created on Tue Aug 13 15:39:01 2019
 @author: Cuozzo, Tardif (p42299, p17620)
 """
 
-DISPSIZE = (1366, 768) # (1440, 900) -> the maximum screen size allowed depends on the computer
+"""
+# ---------------------- #
+# MONITOR SIZE - Windows #
+# ---------------------- #
+import ctypes # import ctypes module
+user32 = ctypes.windll.user32 # Get infos on the user
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1) # a tuple containing monitor resolution
+width = str(screensize[0]) # string value of width screen resolution
+height = str(screensize[1]) # string value of height screen resolution
 
-FGC = (0,5,0.1,0.8)
-BGC = (-0.2,-0.5,-1)
+# ------------------------------- #
+# MONITOR SIZE - Windows / Ubuntu #
+# ------------------------------- #
+from screeninfo import get_monitors # PyPI downloaded module to automatically get the monitor resolution | pip install screeninfo [from terminal]
+
+width = str(get_monitors()[0]).split(',')[2].split('=')[1] # string value of width screen resolution
+height = str(get_monitors()[0]).split(',')[3].split('=')[1] # string value of width screen resolution
+"""
+
+"""
+# ------------------ #
+# MONITOR SIZE - Mac #
+# ------------------ #
+import AppKit # Python module in Mac | pip install AppKit (from terminal)
+listMonitors = [(screen.frame().size.width, screen.frame().size.height) for screen in AppKit.NSScreen.screens()] # list of all eventual monitors
+monitor = listMonitors[0] # first monitor
+width = str(monitor)[0] # string value of width screen resolution
+height = str(monitor)[1] # string value of height screen resolution
+"""
+
+# --------------------- #
+# MONITOR SIZE - Ubuntu #
+# --------------------- #
+import subprocess
+
+def get_screen_resolution():
+    output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0] # call a bash command to get monitor infos (Ubuntu)
+    # output = subprocess.Popen("system_profiler SPDisplaysDataType | awk '/Resolution/{print $2, $3, $4}'",shell=True, stdout=subprocess.PIPE).communicate()[0] # call a bash command to get monitor infos (Mac)
+    resolution = output.split()[0].split(b'x') # isolate monitor size / resolution (Linux)
+    # resolution = str(output).split("'")[1].split('\\n')[0].split(' x ') # isolate monitor size / resolution (Mac)
+    return {'width': resolution[0], 'height': resolution[1]} # dictionnary of resolution
+
+width = int(get_screen_resolution()['width']) # integer value of width screen resolution
+height = int(get_screen_resolution()['height']) # integer value of height screen resolution
+
+
+DISPSIZE = (width, height) # (1366, 768) # (1440, 900) -> the maximum screen size allowed depends on the computer
+#DISPSIZE = (1366, 768)
+
+#FGC = (0,5,0.1,0.8)
+#BGC = (-0.2,-0.5,-1)
 
 
 
@@ -26,8 +73,21 @@ BGC = (-0.2,-0.5,-1)
 dicoF = {'Poulet': 'Csirke',
  'Fromage': 'Sajt',
  'Poivre': 'Bors',
- 'Glace': 'Fagyi'
+ 'Glace': 'Fagyi',
+ 'Eau': 'Viz',
+ 'Loup': 'Farkas',
+ 'Baleine': 'Cet',
+ 'Marcher': 'Menni',
+ 'Courir': 'Rohan',
+ 'Aboyer': 'Ugat',
+ 'Page': 'Oldal',
+ 'Stylo': 'Toll',
+ 'Apprendre': 'Tanulni',
+ 'Oeil': 'Szem',
+ 'Cheveux': 'Haj',
 }
+
+#dicoF = {'Poulet': 'Csirke'}
 
 """
 dico = {'Poulet': 'Csirke',

@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['experiment.py'],
-             pathex=['/home/user/Documents/Sérieux/Python/Git/Psycho'],
+             pathex=['/home/user/Documents/Sérieux/Python/Git/Psycho/dist'],
              binaries=[],
              datas=[],
              hiddenimports=[],

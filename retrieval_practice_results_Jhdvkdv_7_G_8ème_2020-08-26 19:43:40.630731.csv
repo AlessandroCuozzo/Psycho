@@ -1,0 +1,20 @@
+word	translation	response1	response2	response3	response4	response5	response6	response7	1st_attempt	1st_success	1st_failure	attempt	success	failure
+Cet	Baleine	**TEST** I	**TEST** Baleine	**LEARN**	**LEARN**	**FINISHED**	**FINISHED**	**FINISHED**	2	1	1	0	0	0
+Szem	Oeil	**TEST** Uuu	**TEST** Oeil	**LEARN**	**LEARN**	**FINISHED**	**FINISHED**	**FINISHED**	2	1	1	0	0	0
+Tanulni	Apprendre	**TEST** Y	**TEST** Apprendre	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	2	1	1	0	0	0
+Menni	Marcher	**TEST** Marcher	**TEST** Marcher	**TEST** Marcher	**FINISHED**	**FINISHED**	**FINISHED**	**FINISHED**	1	1	0	2	2	0
+Farkas	Loup	**TEST** Qqq	**TEST** Y	**TEST** Loup	**TEST** Loup	**TEST** Zzzzzzzz	**FINISHED**	**FINISHED**	3	1	2	2	1	1
+Sajt	Fromage	**TEST** Fromage	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	1	1	0	0	0	0
+Toll	Stylo	**TEST** Sdfdf	**TEST** W	**TEST** Stylo	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	3	1	2	0	0	0
+Rohan	Courir	**TEST** Courir	**LEARN**	**LEARN**	**FINISHED**	**FINISHED**	**FINISHED**	**FINISHED**	1	1	0	0	0	0
+Viz	Eau	**TEST** Dgsgsg	**TEST** Aboyer	**TEST** Oeil	**TEST** Eau	**TEST** Eau	**TEST** Qqqqqq	**FINISHED**	4	1	3	2	1	1
+Csirke	Poulet	**TEST** Poulet	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	1	1	0	0	0	0
+Ugat	Aboyer	**TEST** Zz	**TEST** Aboyer	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	2	1	1	0	0	0
+Haj	Cheveux	**TEST** P	**TEST** Cheveux	**TEST** Cheveux	**TEST** Cheveux	**FINISHED**	**FINISHED**	**FINISHED**	2	1	1	2	2	0
+Fagyi	Glace	**TEST** Glace	**TEST** Lace	**TEST** Glace	**FINISHED**	**FINISHED**	**FINISHED**	**FINISHED**	1	1	0	2	1	1
+Oldal	Page	**TEST** O	**TEST** Apprendre	**TEST** Page	**DROPPED**	**DROPPED**	**DROPPED**	**DROPPED**	3	1	2	0	0	0
+Bors	Poivre	**TEST** Poivre	**LEARN**	**LEARN**	**FINISHED**	**FINISHED**	**FINISHED**	**FINISHED**	1	1	0	0	0	0
+Jhdvkdv
+7
+G
+8ème
